@@ -2,7 +2,7 @@ const { compare, hash } = require('bcryptjs');
 const { createToken } = require('../utils/auth');
 
 const Mutation = {
-  loginUser: async (_parent, { email, password }, context) => {
+  login: async (_parent, { email, password }, context) => {
     //1. Check if there is a user with that email
     const user = await context.prisma.user({ email });
     if (!user) {
@@ -22,7 +22,7 @@ const Mutation = {
       user
     };
   },
-  registerUser: async (_parent, args, context) => {
+  register: async (_parent, args, context) => {
     //1.Lowercase email
     args.email = args.email.toLowerCase();
 

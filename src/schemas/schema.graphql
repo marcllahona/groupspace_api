@@ -6,8 +6,8 @@ type Query {
 }
 
 type Mutation {
-  loginUser(email: String!, password: String!): AuthPayload!
-  registerUser(
+  login(email: String!, password: String!): AuthPayload!
+  register(
     firstName: String!
     lastName: String!
     email: String!
