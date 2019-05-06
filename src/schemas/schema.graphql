@@ -1,0 +1,33 @@
+# import * from '../generated/prisma.graphql'
+scalar DateTime
+
+type Query {
+  me: User
+}
+
+type Mutation {
+  loginUser(email: String!, password: String!): AuthPayload!
+  registerUser(
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+  ): AuthPayload!
+}
+
+type Subscription {
+  chatMessage: User
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  image: String
+}
