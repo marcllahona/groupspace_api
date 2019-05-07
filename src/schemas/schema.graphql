@@ -3,6 +3,11 @@ scalar DateTime
 
 type Query {
   me: User
+  meeting: Meeting
+  meetingByID(id: ID!): Meeting
+  meetingByName(name: String!): Meeting
+  messagesByMeetingID(id: ID!): [Message!]!
+  messagesByMeetingName(name: String!): [Message!]!
 }
 
 type Mutation {
@@ -13,10 +18,23 @@ type Mutation {
     email: String!
     password: String!
   ): AuthPayload!
+
+  startMeetingWithName(name: String!, userID: ID!): Meeting!
+  startMeeting(userID: ID!): Meeting!
+  leaveMeetingByID(userID: ID!, id: ID!): Meeting!
+  leaveMeetingByName(userID: ID!, name: String!): Meeting!
+  createMessageByMeetingName(
+    content: String!
+    authorID: ID!
+    name: String!
+  ): Message!
+  createMessageByMeetingID(content: String!, authorID: ID!, id: ID!): Message!
+  deleteMeeting(meetingID: ID!): Meeting!
 }
 
 type Subscription {
-  chatMessage: User
+  onCreateMessageByMeetingID(id: ID!): Message
+  onCreateMessageByMeetingName(name: String!): Message
 }
 
 type AuthPayload {
@@ -24,10 +42,12 @@ type AuthPayload {
   user: User!
 }
 
+#Definition of User only for the client. we prevent that any user can get hashed password.
 type User {
   id: ID!
   email: String!
   firstName: String!
   lastName: String!
   image: String
+  meeting: Meeting
 }
