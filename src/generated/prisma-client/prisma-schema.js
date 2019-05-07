@@ -30,6 +30,7 @@ type Meeting {
   name: ID!
   participants(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  access: String!
 }
 
 type MeetingConnection {
@@ -43,6 +44,7 @@ input MeetingCreateInput {
   name: ID!
   participants: UserCreateManyWithoutMeetingInput
   messages: MessageCreateManyWithoutMeetingInput
+  access: String!
 }
 
 input MeetingCreateOneWithoutMessagesInput {
@@ -59,12 +61,14 @@ input MeetingCreateWithoutMessagesInput {
   id: ID
   name: ID!
   participants: UserCreateManyWithoutMeetingInput
+  access: String!
 }
 
 input MeetingCreateWithoutParticipantsInput {
   id: ID
   name: ID!
   messages: MessageCreateManyWithoutMeetingInput
+  access: String!
 }
 
 type MeetingEdge {
@@ -81,6 +85,8 @@ enum MeetingOrderByInput {
   updatedAt_DESC
   name_ASC
   name_DESC
+  access_ASC
+  access_DESC
 }
 
 type MeetingPreviousValues {
@@ -88,6 +94,7 @@ type MeetingPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: ID!
+  access: String!
 }
 
 type MeetingSubscriptionPayload {
@@ -112,10 +119,12 @@ input MeetingUpdateInput {
   name: ID
   participants: UserUpdateManyWithoutMeetingInput
   messages: MessageUpdateManyWithoutMeetingInput
+  access: String
 }
 
 input MeetingUpdateManyMutationInput {
   name: ID
+  access: String
 }
 
 input MeetingUpdateOneRequiredWithoutMessagesInput {
@@ -137,11 +146,13 @@ input MeetingUpdateOneWithoutParticipantsInput {
 input MeetingUpdateWithoutMessagesDataInput {
   name: ID
   participants: UserUpdateManyWithoutMeetingInput
+  access: String
 }
 
 input MeetingUpdateWithoutParticipantsDataInput {
   name: ID
   messages: MessageUpdateManyWithoutMeetingInput
+  access: String
 }
 
 input MeetingUpsertWithoutMessagesInput {
@@ -205,6 +216,20 @@ input MeetingWhereInput {
   messages_every: MessageWhereInput
   messages_some: MessageWhereInput
   messages_none: MessageWhereInput
+  access: String
+  access_not: String
+  access_in: [String!]
+  access_not_in: [String!]
+  access_lt: String
+  access_lte: String
+  access_gt: String
+  access_gte: String
+  access_contains: String
+  access_not_contains: String
+  access_starts_with: String
+  access_not_starts_with: String
+  access_ends_with: String
+  access_not_ends_with: String
   AND: [MeetingWhereInput!]
   OR: [MeetingWhereInput!]
   NOT: [MeetingWhereInput!]

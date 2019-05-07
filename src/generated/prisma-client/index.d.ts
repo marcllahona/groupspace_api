@@ -215,7 +215,9 @@ export type MeetingOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC"
   | "name_ASC"
-  | "name_DESC";
+  | "name_DESC"
+  | "access_ASC"
+  | "access_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -382,6 +384,20 @@ export interface MeetingWhereInput {
   messages_every?: Maybe<MessageWhereInput>;
   messages_some?: Maybe<MessageWhereInput>;
   messages_none?: Maybe<MessageWhereInput>;
+  access?: Maybe<String>;
+  access_not?: Maybe<String>;
+  access_in?: Maybe<String[] | String>;
+  access_not_in?: Maybe<String[] | String>;
+  access_lt?: Maybe<String>;
+  access_lte?: Maybe<String>;
+  access_gt?: Maybe<String>;
+  access_gte?: Maybe<String>;
+  access_contains?: Maybe<String>;
+  access_not_contains?: Maybe<String>;
+  access_starts_with?: Maybe<String>;
+  access_not_starts_with?: Maybe<String>;
+  access_ends_with?: Maybe<String>;
+  access_not_ends_with?: Maybe<String>;
   AND?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
   OR?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
   NOT?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
@@ -453,6 +469,7 @@ export interface MeetingCreateInput {
   name: ID_Input;
   participants?: Maybe<UserCreateManyWithoutMeetingInput>;
   messages?: Maybe<MessageCreateManyWithoutMeetingInput>;
+  access: String;
 }
 
 export interface UserCreateManyWithoutMeetingInput {
@@ -508,12 +525,14 @@ export interface MeetingCreateWithoutParticipantsInput {
   id?: Maybe<ID_Input>;
   name: ID_Input;
   messages?: Maybe<MessageCreateManyWithoutMeetingInput>;
+  access: String;
 }
 
 export interface MeetingUpdateInput {
   name?: Maybe<ID_Input>;
   participants?: Maybe<UserUpdateManyWithoutMeetingInput>;
   messages?: Maybe<MessageUpdateManyWithoutMeetingInput>;
+  access?: Maybe<String>;
 }
 
 export interface UserUpdateManyWithoutMeetingInput {
@@ -737,6 +756,7 @@ export interface MeetingUpdateOneWithoutParticipantsInput {
 export interface MeetingUpdateWithoutParticipantsDataInput {
   name?: Maybe<ID_Input>;
   messages?: Maybe<MessageUpdateManyWithoutMeetingInput>;
+  access?: Maybe<String>;
 }
 
 export interface MeetingUpsertWithoutParticipantsInput {
@@ -816,6 +836,7 @@ export interface MessageUpdateManyDataInput {
 
 export interface MeetingUpdateManyMutationInput {
   name?: Maybe<ID_Input>;
+  access?: Maybe<String>;
 }
 
 export interface MessageCreateInput {
@@ -834,6 +855,7 @@ export interface MeetingCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
   name: ID_Input;
   participants?: Maybe<UserCreateManyWithoutMeetingInput>;
+  access: String;
 }
 
 export interface MessageUpdateInput {
@@ -852,6 +874,7 @@ export interface MeetingUpdateOneRequiredWithoutMessagesInput {
 export interface MeetingUpdateWithoutMessagesDataInput {
   name?: Maybe<ID_Input>;
   participants?: Maybe<UserUpdateManyWithoutMeetingInput>;
+  access?: Maybe<String>;
 }
 
 export interface MeetingUpsertWithoutMessagesInput {
@@ -922,6 +945,7 @@ export interface Meeting {
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   name: ID_Output;
+  access: String;
 }
 
 export interface MeetingPromise extends Promise<Meeting>, Fragmentable {
@@ -947,6 +971,7 @@ export interface MeetingPromise extends Promise<Meeting>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  access: () => Promise<String>;
 }
 
 export interface MeetingSubscription
@@ -974,6 +999,7 @@ export interface MeetingSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  access: () => Promise<AsyncIterator<String>>;
 }
 
 export interface MeetingNullablePromise
@@ -1001,6 +1027,7 @@ export interface MeetingNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  access: () => Promise<String>;
 }
 
 export interface User {
@@ -1323,6 +1350,7 @@ export interface MeetingPreviousValues {
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   name: ID_Output;
+  access: String;
 }
 
 export interface MeetingPreviousValuesPromise
@@ -1332,6 +1360,7 @@ export interface MeetingPreviousValuesPromise
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   name: () => Promise<ID_Output>;
+  access: () => Promise<String>;
 }
 
 export interface MeetingPreviousValuesSubscription
@@ -1341,6 +1370,7 @@ export interface MeetingPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   name: () => Promise<AsyncIterator<ID_Output>>;
+  access: () => Promise<AsyncIterator<String>>;
 }
 
 export interface MessageSubscriptionPayload {

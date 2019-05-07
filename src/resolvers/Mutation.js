@@ -1,6 +1,7 @@
 const { compare, hash } = require('bcryptjs');
 const { randomBytes } = require('crypto');
 const { createToken } = require('../utils/auth');
+const { generateVideoToken } = require('../utils/video');
 
 const Mutation = {
   login: async (_parent, { email, password }, context) => {
@@ -49,6 +50,8 @@ const Mutation = {
   startMeetingWithName: async (_parent, { name, userID }, context) => {
     const meetingExists = await context.prisma.$exists.meeting({ name });
 
+    //Generate Video access for the meeting
+    const access = generateVideoToken(userID, name);
     //If exists a meeting with this name, then user will ONLY join the meeting
     if (meetingExists) {
       return await context.prisma.updateMeeting({
@@ -56,6 +59,7 @@ const Mutation = {
           name
         },
         data: {
+          access,
           participants: {
             connect: {
               id: userID
@@ -68,6 +72,7 @@ const Mutation = {
     else {
       return await context.prisma.createMeeting({
         name,
+        access,
         participants: {
           connect: {
             id: userID
@@ -84,9 +89,13 @@ const Mutation = {
       name = randomBytes(10).toString('hex');
       invalidName = await context.prisma.$exists.meeting({ name });
     }
+
+    //Generate Video access for the meeting
+    const access = generateVideoToken(userID, name);
     //2. Create new meeting with name
     return await context.prisma.createMeeting({
       name,
+      access,
       participants: {
         connect: {
           id: userID
