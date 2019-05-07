@@ -19,28 +19,28 @@ API for [Chatspace](https://github.com/marcllahona/chatspace) written in NodeJS 
 
 ## Screens
 
-![](src/images/screens/login.png)
-![](src/images/screens/register.png)
-![](src/images/screens/home.png)
-![](src/images/screens/meeting.png)
-![](src/images/screens/meeting_chat.png)
-![](src/images/screens/meeting_invite.png)
-![](src/images/screens/meeting_leave.png)
+![](src/assets/screens/login.png)
+![](src/assets/screens/register.png)
+![](src/assets/screens/home.png)
+![](src/assets/screens/meeting.png)
+![](src/assets/screens/meeting_chat.png)
+![](src/assets/screens/meeting_invite.png)
+![](src/assets/screens/meeting_leave.png)
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run dev`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:4000](http://localhost:4000) to view it in the browser.
 
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.<br>
 
-### `npm run build`
+### `npm run start`
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
