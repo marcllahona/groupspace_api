@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^1.19.0",
     "prisma-client-lib": "^1.30.4",
+    "twilio": "^3.30.3",
     "uuid": "^3.3.2"
   }
 }
