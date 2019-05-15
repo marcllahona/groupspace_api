@@ -1,7 +1,5 @@
 const { compare, hash } = require('bcryptjs');
-const { randomBytes } = require('crypto');
-const { createToken } = require('../utils/auth');
-const { generateVideoToken } = require('../utils/video');
+const { createToken, getToken } = require('../utils/auth');
 
 const Mutation = {
   login: async (_parent, { email, password }, context) => {
@@ -47,73 +45,82 @@ const Mutation = {
       user
     };
   },
-  startMeetingWithName: async (_parent, { name, userID }, context) => {
-    const meetingExists = await context.prisma.$exists.meeting({ name });
-
-    //Generate Video access for the meeting
-    const access = generateVideoToken(userID, name);
-    //If exists a meeting with this name, then user will ONLY join the meeting
-    if (meetingExists) {
-      return await context.prisma.updateMeeting({
-        where: {
-          name
-        },
-        data: {
-          access,
-          participants: {
-            connect: {
-              id: userID
-            }
-          }
-        }
-      });
-    }
-    //If does not exists a meeting with code, then user will create and join meeting
-    else {
-      return await context.prisma.createMeeting({
-        name,
-        access,
-        participants: {
-          connect: {
-            id: userID
-          }
-        }
-      });
-    }
-  },
-  startMeeting: async (_parent, { userID }, context) => {
-    //1. We generate a new unique name for meeting
-    let name;
-    let invalidName = true;
-    while (invalidName) {
-      name = randomBytes(10).toString('hex');
-      invalidName = await context.prisma.$exists.meeting({ name });
-    }
-
-    //Generate Video access for the meeting
-    const access = generateVideoToken(userID, name);
-    //2. Create new meeting with name
-    return await context.prisma.createMeeting({
-      name,
-      access,
-      participants: {
+  createGroup: async (
+    _parent,
+    { name, url, category, description },
+    context
+  ) => {
+    const id = getToken(context).id;
+    return await context.prisma.createGroup({
+      creator: {
         connect: {
-          id: userID
+          id
         }
+      },
+      participants: {
+        connect: [
+          {
+            id
+          }
+        ]
+      },
+      name,
+      url,
+      category,
+      description
+    });
+  },
+
+  updateGroup: async (_parent, { id, ...args }, context) => {
+    const userID = getToken(context).id;
+    const [group] = await context.prisma.groups({
+      where: {
+        AND: [{ id }, { creator: { id: userID } }]
+      }
+    });
+
+    if (!group) {
+      throw Error("You don't have privileges to edit thie group!");
+    }
+
+    return await context.prisma.updateGroup({
+      where: {
+        id
+      },
+      data: {
+        ...args
       }
     });
   },
-
-  leaveMeetingByID: async (_parent, { userID, id }, context) => {
-    const meetingExists = await context.prisma.$exists.meeting({
-      id
+  deleteGroup: async (_parent, { id, ...args }, context) => {
+    const userID = getToken(context).id;
+    const [group] = await context.prisma.groups({
+      where: {
+        AND: [{ id }, { creator: { id: userID } }]
+      }
     });
 
-    if (!meetingExists) {
-      throw Error('Meeting does not exist!');
+    if (!group) {
+      throw Error("You don't have privileges to delete this group!");
     }
-    //2. Create new meeting with name
-    return await context.prisma.updateMeeting({
+
+    return await context.prisma.deleteGroup({
+      id
+    });
+  },
+  leaveGroup: async (_parent, { id }, context) => {
+    const userID = getToken(context).id;
+    const [group] = await context.prisma.groups({
+      where: {
+        AND: [{ id }, { creator: { id: userID } }]
+      }
+    });
+
+    if (!group) {
+      throw Error('You do not belong to this group!');
+    }
+
+    return await context.prisma.updateGroup({
       where: {
         id
       },
@@ -126,19 +133,84 @@ const Mutation = {
       }
     });
   },
-
-  leaveMeetingByName: async (_parent, { userID, name }, context) => {
-    const meetingExists = await context.prisma.$exists.meeting({
+  createChannel: async (_parent, { creatorID, groupID, name }, context) => {
+    return await context.prisma.createChannel({
+      creator: {
+        connect: {
+          id: creatorID
+        }
+      },
+      participants: {
+        connect: [
+          {
+            id: creatorID
+          }
+        ]
+      },
+      group: {
+        connect: {
+          id: groupID
+        }
+      },
       name
     });
-
-    if (!meetingExists) {
-      throw Error('Meeting does not exist!');
-    }
-    //2. Create new meeting with name
-    return await context.prisma.updateMeeting({
+  },
+  updateChannel: async (_parent, { id, ...args }, context) => {
+    const userID = getToken(context).id;
+    const [channel] = await context.prisma.channels({
       where: {
-        name
+        AND: [{ id }, { creator: { id: userID } }]
+      }
+    });
+    if (!channel) {
+      throw Error("You don't have privileges to edit this channel!");
+    }
+
+    return context.prisma.editChannel({
+      where: {
+        id
+      },
+      data: {
+        ...args
+      }
+    });
+  },
+  deleteChannel: async (_parent, { id, ...args }, context) => {
+    const userID = getToken(context).id;
+    const [channel] = await context.prisma.channels({
+      where: {
+        AND: [{ id }, { creator: { id: userID } }]
+      }
+    });
+
+    if (!channel) {
+      throw Error("You don't have privileges to delete this channel!");
+    }
+
+    return await context.prisma.deleteChannel({
+      where: {
+        id
+      },
+      data: {
+        ...args
+      }
+    });
+  },
+  leaveChannel: async (_parent, { id }, context) => {
+    const userID = getToken(context).id;
+    const [channel] = await context.prisma.channels({
+      where: {
+        AND: [{ id }, { creator: { id: userID } }]
+      }
+    });
+
+    if (!channel) {
+      throw Error("You don't have privileges to delete this channel!");
+    }
+
+    return await context.prisma.updateChannel({
+      where: {
+        id
       },
       data: {
         participants: {
@@ -149,56 +221,51 @@ const Mutation = {
       }
     });
   },
-
-  deleteMeeting: async (_parent, { meetingID }, context) => {
-    const meetingExists = await context.prisma.$exists.meeting({
-      id: meetingID
-    });
-
-    if (!meetingExists) {
-      throw Error('Meeting does not exist!');
-    }
-    //2. Create new meeting with name
-    return await context.prisma.deleteMeeting({
-      id: meetingID
+  createMessage: async (_parent, { authorID, channelID, content }, context) => {
+    return await context.prisma.createMessage({
+      author: {
+        connect: {
+          id: authorID
+        }
+      },
+      channel: {
+        connect: {
+          id: channelID
+        }
+      },
+      content
     });
   },
-  createMessageByMeetingID: async (
+  createMessageByName: async (
     _parent,
-    { content, authorID, id },
+    { channelName, groupName, content },
     context
   ) => {
+    const id = getToken(context).id;
+    const [channel] = await context.prisma.channels({
+      where: {
+        name: channelName,
+        group: {
+          name: groupName
+        }
+      }
+    });
+
+    if (!channel) {
+      throw Error('Message cannot be create in this Channel');
+    }
     return await context.prisma.createMessage({
-      content,
-      meeting: {
+      author: {
         connect: {
           id
         }
       },
-      author: {
+      channel: {
         connect: {
-          id: authorID
-        }
-      }
-    });
-  },
-  createMessageByMeetingName: async (
-    _parent,
-    { content, authorID, name },
-    context
-  ) => {
-    return await context.prisma.createMessage({
-      content,
-      meeting: {
-        connect: {
-          name
+          id: channel.id
         }
       },
-      author: {
-        connect: {
-          id: authorID
-        }
-      }
+      content
     });
   }
 };

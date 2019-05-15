@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateMeeting {
+/* GraphQL */ `type AggregateChannel {
+  count: Int!
+}
+
+type AggregateGroup {
   count: Int!
 }
 
@@ -19,64 +23,96 @@ type BatchPayload {
   count: Long!
 }
 
-scalar DateTime
-
-scalar Long
-
-type Meeting {
+type Channel {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  name: ID!
+  creator: User!
+  name: String!
+  description: String
   participants(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
-  access: String!
+  group: Group!
 }
 
-type MeetingConnection {
+type ChannelConnection {
   pageInfo: PageInfo!
-  edges: [MeetingEdge]!
-  aggregate: AggregateMeeting!
+  edges: [ChannelEdge]!
+  aggregate: AggregateChannel!
 }
 
-input MeetingCreateInput {
+input ChannelCreateInput {
   id: ID
-  name: ID!
-  participants: UserCreateManyWithoutMeetingInput
-  messages: MessageCreateManyWithoutMeetingInput
-  access: String!
+  creator: UserCreateOneWithoutCreatedChannelsInput!
+  name: String!
+  description: String
+  participants: UserCreateManyWithoutChannelsInput
+  messages: MessageCreateManyWithoutChannelInput
+  group: GroupCreateOneWithoutChannelsInput!
 }
 
-input MeetingCreateOneWithoutMessagesInput {
-  create: MeetingCreateWithoutMessagesInput
-  connect: MeetingWhereUniqueInput
+input ChannelCreateManyWithoutCreatorInput {
+  create: [ChannelCreateWithoutCreatorInput!]
+  connect: [ChannelWhereUniqueInput!]
 }
 
-input MeetingCreateOneWithoutParticipantsInput {
-  create: MeetingCreateWithoutParticipantsInput
-  connect: MeetingWhereUniqueInput
+input ChannelCreateManyWithoutGroupInput {
+  create: [ChannelCreateWithoutGroupInput!]
+  connect: [ChannelWhereUniqueInput!]
 }
 
-input MeetingCreateWithoutMessagesInput {
+input ChannelCreateManyWithoutParticipantsInput {
+  create: [ChannelCreateWithoutParticipantsInput!]
+  connect: [ChannelWhereUniqueInput!]
+}
+
+input ChannelCreateOneWithoutMessagesInput {
+  create: ChannelCreateWithoutMessagesInput
+  connect: ChannelWhereUniqueInput
+}
+
+input ChannelCreateWithoutCreatorInput {
   id: ID
-  name: ID!
-  participants: UserCreateManyWithoutMeetingInput
-  access: String!
+  name: String!
+  description: String
+  participants: UserCreateManyWithoutChannelsInput
+  messages: MessageCreateManyWithoutChannelInput
+  group: GroupCreateOneWithoutChannelsInput!
 }
 
-input MeetingCreateWithoutParticipantsInput {
+input ChannelCreateWithoutGroupInput {
   id: ID
-  name: ID!
-  messages: MessageCreateManyWithoutMeetingInput
-  access: String!
+  creator: UserCreateOneWithoutCreatedChannelsInput!
+  name: String!
+  description: String
+  participants: UserCreateManyWithoutChannelsInput
+  messages: MessageCreateManyWithoutChannelInput
 }
 
-type MeetingEdge {
-  node: Meeting!
+input ChannelCreateWithoutMessagesInput {
+  id: ID
+  creator: UserCreateOneWithoutCreatedChannelsInput!
+  name: String!
+  description: String
+  participants: UserCreateManyWithoutChannelsInput
+  group: GroupCreateOneWithoutChannelsInput!
+}
+
+input ChannelCreateWithoutParticipantsInput {
+  id: ID
+  creator: UserCreateOneWithoutCreatedChannelsInput!
+  name: String!
+  description: String
+  messages: MessageCreateManyWithoutChannelInput
+  group: GroupCreateOneWithoutChannelsInput!
+}
+
+type ChannelEdge {
+  node: Channel!
   cursor: String!
 }
 
-enum MeetingOrderByInput {
+enum ChannelOrderByInput {
   id_ASC
   id_DESC
   createdAt_ASC
@@ -85,87 +121,19 @@ enum MeetingOrderByInput {
   updatedAt_DESC
   name_ASC
   name_DESC
-  access_ASC
-  access_DESC
+  description_ASC
+  description_DESC
 }
 
-type MeetingPreviousValues {
+type ChannelPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  name: ID!
-  access: String!
+  name: String!
+  description: String
 }
 
-type MeetingSubscriptionPayload {
-  mutation: MutationType!
-  node: Meeting
-  updatedFields: [String!]
-  previousValues: MeetingPreviousValues
-}
-
-input MeetingSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: MeetingWhereInput
-  AND: [MeetingSubscriptionWhereInput!]
-  OR: [MeetingSubscriptionWhereInput!]
-  NOT: [MeetingSubscriptionWhereInput!]
-}
-
-input MeetingUpdateInput {
-  name: ID
-  participants: UserUpdateManyWithoutMeetingInput
-  messages: MessageUpdateManyWithoutMeetingInput
-  access: String
-}
-
-input MeetingUpdateManyMutationInput {
-  name: ID
-  access: String
-}
-
-input MeetingUpdateOneRequiredWithoutMessagesInput {
-  create: MeetingCreateWithoutMessagesInput
-  update: MeetingUpdateWithoutMessagesDataInput
-  upsert: MeetingUpsertWithoutMessagesInput
-  connect: MeetingWhereUniqueInput
-}
-
-input MeetingUpdateOneWithoutParticipantsInput {
-  create: MeetingCreateWithoutParticipantsInput
-  update: MeetingUpdateWithoutParticipantsDataInput
-  upsert: MeetingUpsertWithoutParticipantsInput
-  delete: Boolean
-  disconnect: Boolean
-  connect: MeetingWhereUniqueInput
-}
-
-input MeetingUpdateWithoutMessagesDataInput {
-  name: ID
-  participants: UserUpdateManyWithoutMeetingInput
-  access: String
-}
-
-input MeetingUpdateWithoutParticipantsDataInput {
-  name: ID
-  messages: MessageUpdateManyWithoutMeetingInput
-  access: String
-}
-
-input MeetingUpsertWithoutMessagesInput {
-  update: MeetingUpdateWithoutMessagesDataInput!
-  create: MeetingCreateWithoutMessagesInput!
-}
-
-input MeetingUpsertWithoutParticipantsInput {
-  update: MeetingUpdateWithoutParticipantsDataInput!
-  create: MeetingCreateWithoutParticipantsInput!
-}
-
-input MeetingWhereInput {
+input ChannelScalarWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -196,56 +164,819 @@ input MeetingWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  name: ID
-  name_not: ID
-  name_in: [ID!]
-  name_not_in: [ID!]
-  name_lt: ID
-  name_lte: ID
-  name_gt: ID
-  name_gte: ID
-  name_contains: ID
-  name_not_contains: ID
-  name_starts_with: ID
-  name_not_starts_with: ID
-  name_ends_with: ID
-  name_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  AND: [ChannelScalarWhereInput!]
+  OR: [ChannelScalarWhereInput!]
+  NOT: [ChannelScalarWhereInput!]
+}
+
+type ChannelSubscriptionPayload {
+  mutation: MutationType!
+  node: Channel
+  updatedFields: [String!]
+  previousValues: ChannelPreviousValues
+}
+
+input ChannelSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ChannelWhereInput
+  AND: [ChannelSubscriptionWhereInput!]
+  OR: [ChannelSubscriptionWhereInput!]
+  NOT: [ChannelSubscriptionWhereInput!]
+}
+
+input ChannelUpdateInput {
+  creator: UserUpdateOneRequiredWithoutCreatedChannelsInput
+  name: String
+  description: String
+  participants: UserUpdateManyWithoutChannelsInput
+  messages: MessageUpdateManyWithoutChannelInput
+  group: GroupUpdateOneRequiredWithoutChannelsInput
+}
+
+input ChannelUpdateManyDataInput {
+  name: String
+  description: String
+}
+
+input ChannelUpdateManyMutationInput {
+  name: String
+  description: String
+}
+
+input ChannelUpdateManyWithoutCreatorInput {
+  create: [ChannelCreateWithoutCreatorInput!]
+  delete: [ChannelWhereUniqueInput!]
+  connect: [ChannelWhereUniqueInput!]
+  set: [ChannelWhereUniqueInput!]
+  disconnect: [ChannelWhereUniqueInput!]
+  update: [ChannelUpdateWithWhereUniqueWithoutCreatorInput!]
+  upsert: [ChannelUpsertWithWhereUniqueWithoutCreatorInput!]
+  deleteMany: [ChannelScalarWhereInput!]
+  updateMany: [ChannelUpdateManyWithWhereNestedInput!]
+}
+
+input ChannelUpdateManyWithoutGroupInput {
+  create: [ChannelCreateWithoutGroupInput!]
+  delete: [ChannelWhereUniqueInput!]
+  connect: [ChannelWhereUniqueInput!]
+  set: [ChannelWhereUniqueInput!]
+  disconnect: [ChannelWhereUniqueInput!]
+  update: [ChannelUpdateWithWhereUniqueWithoutGroupInput!]
+  upsert: [ChannelUpsertWithWhereUniqueWithoutGroupInput!]
+  deleteMany: [ChannelScalarWhereInput!]
+  updateMany: [ChannelUpdateManyWithWhereNestedInput!]
+}
+
+input ChannelUpdateManyWithoutParticipantsInput {
+  create: [ChannelCreateWithoutParticipantsInput!]
+  delete: [ChannelWhereUniqueInput!]
+  connect: [ChannelWhereUniqueInput!]
+  set: [ChannelWhereUniqueInput!]
+  disconnect: [ChannelWhereUniqueInput!]
+  update: [ChannelUpdateWithWhereUniqueWithoutParticipantsInput!]
+  upsert: [ChannelUpsertWithWhereUniqueWithoutParticipantsInput!]
+  deleteMany: [ChannelScalarWhereInput!]
+  updateMany: [ChannelUpdateManyWithWhereNestedInput!]
+}
+
+input ChannelUpdateManyWithWhereNestedInput {
+  where: ChannelScalarWhereInput!
+  data: ChannelUpdateManyDataInput!
+}
+
+input ChannelUpdateOneRequiredWithoutMessagesInput {
+  create: ChannelCreateWithoutMessagesInput
+  update: ChannelUpdateWithoutMessagesDataInput
+  upsert: ChannelUpsertWithoutMessagesInput
+  connect: ChannelWhereUniqueInput
+}
+
+input ChannelUpdateWithoutCreatorDataInput {
+  name: String
+  description: String
+  participants: UserUpdateManyWithoutChannelsInput
+  messages: MessageUpdateManyWithoutChannelInput
+  group: GroupUpdateOneRequiredWithoutChannelsInput
+}
+
+input ChannelUpdateWithoutGroupDataInput {
+  creator: UserUpdateOneRequiredWithoutCreatedChannelsInput
+  name: String
+  description: String
+  participants: UserUpdateManyWithoutChannelsInput
+  messages: MessageUpdateManyWithoutChannelInput
+}
+
+input ChannelUpdateWithoutMessagesDataInput {
+  creator: UserUpdateOneRequiredWithoutCreatedChannelsInput
+  name: String
+  description: String
+  participants: UserUpdateManyWithoutChannelsInput
+  group: GroupUpdateOneRequiredWithoutChannelsInput
+}
+
+input ChannelUpdateWithoutParticipantsDataInput {
+  creator: UserUpdateOneRequiredWithoutCreatedChannelsInput
+  name: String
+  description: String
+  messages: MessageUpdateManyWithoutChannelInput
+  group: GroupUpdateOneRequiredWithoutChannelsInput
+}
+
+input ChannelUpdateWithWhereUniqueWithoutCreatorInput {
+  where: ChannelWhereUniqueInput!
+  data: ChannelUpdateWithoutCreatorDataInput!
+}
+
+input ChannelUpdateWithWhereUniqueWithoutGroupInput {
+  where: ChannelWhereUniqueInput!
+  data: ChannelUpdateWithoutGroupDataInput!
+}
+
+input ChannelUpdateWithWhereUniqueWithoutParticipantsInput {
+  where: ChannelWhereUniqueInput!
+  data: ChannelUpdateWithoutParticipantsDataInput!
+}
+
+input ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput!
+  create: ChannelCreateWithoutMessagesInput!
+}
+
+input ChannelUpsertWithWhereUniqueWithoutCreatorInput {
+  where: ChannelWhereUniqueInput!
+  update: ChannelUpdateWithoutCreatorDataInput!
+  create: ChannelCreateWithoutCreatorInput!
+}
+
+input ChannelUpsertWithWhereUniqueWithoutGroupInput {
+  where: ChannelWhereUniqueInput!
+  update: ChannelUpdateWithoutGroupDataInput!
+  create: ChannelCreateWithoutGroupInput!
+}
+
+input ChannelUpsertWithWhereUniqueWithoutParticipantsInput {
+  where: ChannelWhereUniqueInput!
+  update: ChannelUpdateWithoutParticipantsDataInput!
+  create: ChannelCreateWithoutParticipantsInput!
+}
+
+input ChannelWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  creator: UserWhereInput
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
   participants_every: UserWhereInput
   participants_some: UserWhereInput
   participants_none: UserWhereInput
   messages_every: MessageWhereInput
   messages_some: MessageWhereInput
   messages_none: MessageWhereInput
-  access: String
-  access_not: String
-  access_in: [String!]
-  access_not_in: [String!]
-  access_lt: String
-  access_lte: String
-  access_gt: String
-  access_gte: String
-  access_contains: String
-  access_not_contains: String
-  access_starts_with: String
-  access_not_starts_with: String
-  access_ends_with: String
-  access_not_ends_with: String
-  AND: [MeetingWhereInput!]
-  OR: [MeetingWhereInput!]
-  NOT: [MeetingWhereInput!]
+  group: GroupWhereInput
+  AND: [ChannelWhereInput!]
+  OR: [ChannelWhereInput!]
+  NOT: [ChannelWhereInput!]
 }
 
-input MeetingWhereUniqueInput {
+input ChannelWhereUniqueInput {
   id: ID
-  name: ID
 }
+
+scalar DateTime
+
+type Group {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creator: User!
+  name: String!
+  description: String!
+  category: String!
+  topics: [String!]!
+  image: String
+  backgroundImage: String
+  url: String
+  participants(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+}
+
+type GroupConnection {
+  pageInfo: PageInfo!
+  edges: [GroupEdge]!
+  aggregate: AggregateGroup!
+}
+
+input GroupCreateInput {
+  id: ID
+  creator: UserCreateOneWithoutCreatedGroupsInput!
+  name: String!
+  description: String!
+  category: String!
+  topics: GroupCreatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserCreateManyWithoutGroupsInput
+  channels: ChannelCreateManyWithoutGroupInput
+}
+
+input GroupCreateManyWithoutCreatorInput {
+  create: [GroupCreateWithoutCreatorInput!]
+  connect: [GroupWhereUniqueInput!]
+}
+
+input GroupCreateManyWithoutParticipantsInput {
+  create: [GroupCreateWithoutParticipantsInput!]
+  connect: [GroupWhereUniqueInput!]
+}
+
+input GroupCreateOneWithoutChannelsInput {
+  create: GroupCreateWithoutChannelsInput
+  connect: GroupWhereUniqueInput
+}
+
+input GroupCreatetopicsInput {
+  set: [String!]
+}
+
+input GroupCreateWithoutChannelsInput {
+  id: ID
+  creator: UserCreateOneWithoutCreatedGroupsInput!
+  name: String!
+  description: String!
+  category: String!
+  topics: GroupCreatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserCreateManyWithoutGroupsInput
+}
+
+input GroupCreateWithoutCreatorInput {
+  id: ID
+  name: String!
+  description: String!
+  category: String!
+  topics: GroupCreatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserCreateManyWithoutGroupsInput
+  channels: ChannelCreateManyWithoutGroupInput
+}
+
+input GroupCreateWithoutParticipantsInput {
+  id: ID
+  creator: UserCreateOneWithoutCreatedGroupsInput!
+  name: String!
+  description: String!
+  category: String!
+  topics: GroupCreatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  channels: ChannelCreateManyWithoutGroupInput
+}
+
+type GroupEdge {
+  node: Group!
+  cursor: String!
+}
+
+enum GroupOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  category_ASC
+  category_DESC
+  image_ASC
+  image_DESC
+  backgroundImage_ASC
+  backgroundImage_DESC
+  url_ASC
+  url_DESC
+}
+
+type GroupPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  description: String!
+  category: String!
+  topics: [String!]!
+  image: String
+  backgroundImage: String
+  url: String
+}
+
+input GroupScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  category: String
+  category_not: String
+  category_in: [String!]
+  category_not_in: [String!]
+  category_lt: String
+  category_lte: String
+  category_gt: String
+  category_gte: String
+  category_contains: String
+  category_not_contains: String
+  category_starts_with: String
+  category_not_starts_with: String
+  category_ends_with: String
+  category_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  backgroundImage: String
+  backgroundImage_not: String
+  backgroundImage_in: [String!]
+  backgroundImage_not_in: [String!]
+  backgroundImage_lt: String
+  backgroundImage_lte: String
+  backgroundImage_gt: String
+  backgroundImage_gte: String
+  backgroundImage_contains: String
+  backgroundImage_not_contains: String
+  backgroundImage_starts_with: String
+  backgroundImage_not_starts_with: String
+  backgroundImage_ends_with: String
+  backgroundImage_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  AND: [GroupScalarWhereInput!]
+  OR: [GroupScalarWhereInput!]
+  NOT: [GroupScalarWhereInput!]
+}
+
+type GroupSubscriptionPayload {
+  mutation: MutationType!
+  node: Group
+  updatedFields: [String!]
+  previousValues: GroupPreviousValues
+}
+
+input GroupSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GroupWhereInput
+  AND: [GroupSubscriptionWhereInput!]
+  OR: [GroupSubscriptionWhereInput!]
+  NOT: [GroupSubscriptionWhereInput!]
+}
+
+input GroupUpdateInput {
+  creator: UserUpdateOneRequiredWithoutCreatedGroupsInput
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserUpdateManyWithoutGroupsInput
+  channels: ChannelUpdateManyWithoutGroupInput
+}
+
+input GroupUpdateManyDataInput {
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+}
+
+input GroupUpdateManyMutationInput {
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+}
+
+input GroupUpdateManyWithoutCreatorInput {
+  create: [GroupCreateWithoutCreatorInput!]
+  delete: [GroupWhereUniqueInput!]
+  connect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithWhereUniqueWithoutCreatorInput!]
+  upsert: [GroupUpsertWithWhereUniqueWithoutCreatorInput!]
+  deleteMany: [GroupScalarWhereInput!]
+  updateMany: [GroupUpdateManyWithWhereNestedInput!]
+}
+
+input GroupUpdateManyWithoutParticipantsInput {
+  create: [GroupCreateWithoutParticipantsInput!]
+  delete: [GroupWhereUniqueInput!]
+  connect: [GroupWhereUniqueInput!]
+  set: [GroupWhereUniqueInput!]
+  disconnect: [GroupWhereUniqueInput!]
+  update: [GroupUpdateWithWhereUniqueWithoutParticipantsInput!]
+  upsert: [GroupUpsertWithWhereUniqueWithoutParticipantsInput!]
+  deleteMany: [GroupScalarWhereInput!]
+  updateMany: [GroupUpdateManyWithWhereNestedInput!]
+}
+
+input GroupUpdateManyWithWhereNestedInput {
+  where: GroupScalarWhereInput!
+  data: GroupUpdateManyDataInput!
+}
+
+input GroupUpdateOneRequiredWithoutChannelsInput {
+  create: GroupCreateWithoutChannelsInput
+  update: GroupUpdateWithoutChannelsDataInput
+  upsert: GroupUpsertWithoutChannelsInput
+  connect: GroupWhereUniqueInput
+}
+
+input GroupUpdatetopicsInput {
+  set: [String!]
+}
+
+input GroupUpdateWithoutChannelsDataInput {
+  creator: UserUpdateOneRequiredWithoutCreatedGroupsInput
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserUpdateManyWithoutGroupsInput
+}
+
+input GroupUpdateWithoutCreatorDataInput {
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  participants: UserUpdateManyWithoutGroupsInput
+  channels: ChannelUpdateManyWithoutGroupInput
+}
+
+input GroupUpdateWithoutParticipantsDataInput {
+  creator: UserUpdateOneRequiredWithoutCreatedGroupsInput
+  name: String
+  description: String
+  category: String
+  topics: GroupUpdatetopicsInput
+  image: String
+  backgroundImage: String
+  url: String
+  channels: ChannelUpdateManyWithoutGroupInput
+}
+
+input GroupUpdateWithWhereUniqueWithoutCreatorInput {
+  where: GroupWhereUniqueInput!
+  data: GroupUpdateWithoutCreatorDataInput!
+}
+
+input GroupUpdateWithWhereUniqueWithoutParticipantsInput {
+  where: GroupWhereUniqueInput!
+  data: GroupUpdateWithoutParticipantsDataInput!
+}
+
+input GroupUpsertWithoutChannelsInput {
+  update: GroupUpdateWithoutChannelsDataInput!
+  create: GroupCreateWithoutChannelsInput!
+}
+
+input GroupUpsertWithWhereUniqueWithoutCreatorInput {
+  where: GroupWhereUniqueInput!
+  update: GroupUpdateWithoutCreatorDataInput!
+  create: GroupCreateWithoutCreatorInput!
+}
+
+input GroupUpsertWithWhereUniqueWithoutParticipantsInput {
+  where: GroupWhereUniqueInput!
+  update: GroupUpdateWithoutParticipantsDataInput!
+  create: GroupCreateWithoutParticipantsInput!
+}
+
+input GroupWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  creator: UserWhereInput
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  category: String
+  category_not: String
+  category_in: [String!]
+  category_not_in: [String!]
+  category_lt: String
+  category_lte: String
+  category_gt: String
+  category_gte: String
+  category_contains: String
+  category_not_contains: String
+  category_starts_with: String
+  category_not_starts_with: String
+  category_ends_with: String
+  category_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  backgroundImage: String
+  backgroundImage_not: String
+  backgroundImage_in: [String!]
+  backgroundImage_not_in: [String!]
+  backgroundImage_lt: String
+  backgroundImage_lte: String
+  backgroundImage_gt: String
+  backgroundImage_gte: String
+  backgroundImage_contains: String
+  backgroundImage_not_contains: String
+  backgroundImage_starts_with: String
+  backgroundImage_not_starts_with: String
+  backgroundImage_ends_with: String
+  backgroundImage_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  participants_every: UserWhereInput
+  participants_some: UserWhereInput
+  participants_none: UserWhereInput
+  channels_every: ChannelWhereInput
+  channels_some: ChannelWhereInput
+  channels_none: ChannelWhereInput
+  AND: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+}
+
+input GroupWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+scalar Long
 
 type Message {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   content: String!
-  meeting: Meeting!
+  channel: Channel!
   author: User!
 }
 
@@ -258,19 +989,30 @@ type MessageConnection {
 input MessageCreateInput {
   id: ID
   content: String!
-  meeting: MeetingCreateOneWithoutMessagesInput!
-  author: UserCreateOneInput!
+  channel: ChannelCreateOneWithoutMessagesInput!
+  author: UserCreateOneWithoutMessagesInput!
 }
 
-input MessageCreateManyWithoutMeetingInput {
-  create: [MessageCreateWithoutMeetingInput!]
+input MessageCreateManyWithoutAuthorInput {
+  create: [MessageCreateWithoutAuthorInput!]
   connect: [MessageWhereUniqueInput!]
 }
 
-input MessageCreateWithoutMeetingInput {
+input MessageCreateManyWithoutChannelInput {
+  create: [MessageCreateWithoutChannelInput!]
+  connect: [MessageWhereUniqueInput!]
+}
+
+input MessageCreateWithoutAuthorInput {
   id: ID
   content: String!
-  author: UserCreateOneInput!
+  channel: ChannelCreateOneWithoutMessagesInput!
+}
+
+input MessageCreateWithoutChannelInput {
+  id: ID
+  content: String!
+  author: UserCreateOneWithoutMessagesInput!
 }
 
 type MessageEdge {
@@ -366,8 +1108,8 @@ input MessageSubscriptionWhereInput {
 
 input MessageUpdateInput {
   content: String
-  meeting: MeetingUpdateOneRequiredWithoutMessagesInput
-  author: UserUpdateOneRequiredInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateManyDataInput {
@@ -378,14 +1120,26 @@ input MessageUpdateManyMutationInput {
   content: String
 }
 
-input MessageUpdateManyWithoutMeetingInput {
-  create: [MessageCreateWithoutMeetingInput!]
+input MessageUpdateManyWithoutAuthorInput {
+  create: [MessageCreateWithoutAuthorInput!]
   delete: [MessageWhereUniqueInput!]
   connect: [MessageWhereUniqueInput!]
   set: [MessageWhereUniqueInput!]
   disconnect: [MessageWhereUniqueInput!]
-  update: [MessageUpdateWithWhereUniqueWithoutMeetingInput!]
-  upsert: [MessageUpsertWithWhereUniqueWithoutMeetingInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutAuthorInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutAuthorInput!]
+  deleteMany: [MessageScalarWhereInput!]
+  updateMany: [MessageUpdateManyWithWhereNestedInput!]
+}
+
+input MessageUpdateManyWithoutChannelInput {
+  create: [MessageCreateWithoutChannelInput!]
+  delete: [MessageWhereUniqueInput!]
+  connect: [MessageWhereUniqueInput!]
+  set: [MessageWhereUniqueInput!]
+  disconnect: [MessageWhereUniqueInput!]
+  update: [MessageUpdateWithWhereUniqueWithoutChannelInput!]
+  upsert: [MessageUpsertWithWhereUniqueWithoutChannelInput!]
   deleteMany: [MessageScalarWhereInput!]
   updateMany: [MessageUpdateManyWithWhereNestedInput!]
 }
@@ -395,20 +1149,36 @@ input MessageUpdateManyWithWhereNestedInput {
   data: MessageUpdateManyDataInput!
 }
 
-input MessageUpdateWithoutMeetingDataInput {
+input MessageUpdateWithoutAuthorDataInput {
   content: String
-  author: UserUpdateOneRequiredInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
-input MessageUpdateWithWhereUniqueWithoutMeetingInput {
-  where: MessageWhereUniqueInput!
-  data: MessageUpdateWithoutMeetingDataInput!
+input MessageUpdateWithoutChannelDataInput {
+  content: String
+  author: UserUpdateOneRequiredWithoutMessagesInput
 }
 
-input MessageUpsertWithWhereUniqueWithoutMeetingInput {
+input MessageUpdateWithWhereUniqueWithoutAuthorInput {
   where: MessageWhereUniqueInput!
-  update: MessageUpdateWithoutMeetingDataInput!
-  create: MessageCreateWithoutMeetingInput!
+  data: MessageUpdateWithoutAuthorDataInput!
+}
+
+input MessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput!
+  data: MessageUpdateWithoutChannelDataInput!
+}
+
+input MessageUpsertWithWhereUniqueWithoutAuthorInput {
+  where: MessageWhereUniqueInput!
+  update: MessageUpdateWithoutAuthorDataInput!
+  create: MessageCreateWithoutAuthorInput!
+}
+
+input MessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput!
+  update: MessageUpdateWithoutChannelDataInput!
+  create: MessageCreateWithoutChannelInput!
 }
 
 input MessageWhereInput {
@@ -456,7 +1226,7 @@ input MessageWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
-  meeting: MeetingWhereInput
+  channel: ChannelWhereInput
   author: UserWhereInput
   AND: [MessageWhereInput!]
   OR: [MessageWhereInput!]
@@ -468,12 +1238,18 @@ input MessageWhereUniqueInput {
 }
 
 type Mutation {
-  createMeeting(data: MeetingCreateInput!): Meeting!
-  updateMeeting(data: MeetingUpdateInput!, where: MeetingWhereUniqueInput!): Meeting
-  updateManyMeetings(data: MeetingUpdateManyMutationInput!, where: MeetingWhereInput): BatchPayload!
-  upsertMeeting(where: MeetingWhereUniqueInput!, create: MeetingCreateInput!, update: MeetingUpdateInput!): Meeting!
-  deleteMeeting(where: MeetingWhereUniqueInput!): Meeting
-  deleteManyMeetings(where: MeetingWhereInput): BatchPayload!
+  createChannel(data: ChannelCreateInput!): Channel!
+  updateChannel(data: ChannelUpdateInput!, where: ChannelWhereUniqueInput!): Channel
+  updateManyChannels(data: ChannelUpdateManyMutationInput!, where: ChannelWhereInput): BatchPayload!
+  upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
+  deleteChannel(where: ChannelWhereUniqueInput!): Channel
+  deleteManyChannels(where: ChannelWhereInput): BatchPayload!
+  createGroup(data: GroupCreateInput!): Group!
+  updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
+  updateManyGroups(data: GroupUpdateManyMutationInput!, where: GroupWhereInput): BatchPayload!
+  upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
+  deleteGroup(where: GroupWhereUniqueInput!): Group
+  deleteManyGroups(where: GroupWhereInput): BatchPayload!
   createMessage(data: MessageCreateInput!): Message!
   updateMessage(data: MessageUpdateInput!, where: MessageWhereUniqueInput!): Message
   updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
@@ -506,9 +1282,12 @@ type PageInfo {
 }
 
 type Query {
-  meeting(where: MeetingWhereUniqueInput!): Meeting
-  meetings(where: MeetingWhereInput, orderBy: MeetingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Meeting]!
-  meetingsConnection(where: MeetingWhereInput, orderBy: MeetingOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MeetingConnection!
+  channel(where: ChannelWhereUniqueInput!): Channel
+  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel]!
+  channelsConnection(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ChannelConnection!
+  group(where: GroupWhereUniqueInput!): Group
+  groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
+  groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
   message(where: MessageWhereUniqueInput!): Message
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message]!
   messagesConnection(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MessageConnection!
@@ -519,7 +1298,8 @@ type Query {
 }
 
 type Subscription {
-  meeting(where: MeetingSubscriptionWhereInput): MeetingSubscriptionPayload
+  channel(where: ChannelSubscriptionWhereInput): ChannelSubscriptionPayload
+  group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
@@ -533,7 +1313,11 @@ type User {
   email: String!
   password: String!
   image: String
-  meeting: Meeting
+  groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
+  createdGroups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group!]
+  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+  createdChannels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+  messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
 }
 
 type UserConnection {
@@ -549,26 +1333,101 @@ input UserCreateInput {
   email: String!
   password: String!
   image: String
-  meeting: MeetingCreateOneWithoutParticipantsInput
+  groups: GroupCreateManyWithoutParticipantsInput
+  createdGroups: GroupCreateManyWithoutCreatorInput
+  channels: ChannelCreateManyWithoutParticipantsInput
+  createdChannels: ChannelCreateManyWithoutCreatorInput
+  messages: MessageCreateManyWithoutAuthorInput
 }
 
-input UserCreateManyWithoutMeetingInput {
-  create: [UserCreateWithoutMeetingInput!]
+input UserCreateManyWithoutChannelsInput {
+  create: [UserCreateWithoutChannelsInput!]
   connect: [UserWhereUniqueInput!]
 }
 
-input UserCreateOneInput {
-  create: UserCreateInput
+input UserCreateManyWithoutGroupsInput {
+  create: [UserCreateWithoutGroupsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutCreatedChannelsInput {
+  create: UserCreateWithoutCreatedChannelsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutMeetingInput {
+input UserCreateOneWithoutCreatedGroupsInput {
+  create: UserCreateWithoutCreatedGroupsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutMessagesInput {
+  create: UserCreateWithoutMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutChannelsInput {
   id: ID
   firstName: String!
   lastName: String!
   email: String!
   password: String!
   image: String
+  groups: GroupCreateManyWithoutParticipantsInput
+  createdGroups: GroupCreateManyWithoutCreatorInput
+  createdChannels: ChannelCreateManyWithoutCreatorInput
+  messages: MessageCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutCreatedChannelsInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  image: String
+  groups: GroupCreateManyWithoutParticipantsInput
+  createdGroups: GroupCreateManyWithoutCreatorInput
+  channels: ChannelCreateManyWithoutParticipantsInput
+  messages: MessageCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutCreatedGroupsInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  image: String
+  groups: GroupCreateManyWithoutParticipantsInput
+  channels: ChannelCreateManyWithoutParticipantsInput
+  createdChannels: ChannelCreateManyWithoutCreatorInput
+  messages: MessageCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutGroupsInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  image: String
+  createdGroups: GroupCreateManyWithoutCreatorInput
+  channels: ChannelCreateManyWithoutParticipantsInput
+  createdChannels: ChannelCreateManyWithoutCreatorInput
+  messages: MessageCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutMessagesInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  image: String
+  groups: GroupCreateManyWithoutParticipantsInput
+  createdGroups: GroupCreateManyWithoutCreatorInput
+  channels: ChannelCreateManyWithoutParticipantsInput
+  createdChannels: ChannelCreateManyWithoutCreatorInput
 }
 
 type UserEdge {
@@ -730,22 +1589,17 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  firstName: String
-  lastName: String
-  email: String
-  password: String
-  image: String
-  meeting: MeetingUpdateOneWithoutParticipantsInput
-}
-
 input UserUpdateInput {
   firstName: String
   lastName: String
   email: String
   password: String
   image: String
-  meeting: MeetingUpdateOneWithoutParticipantsInput
+  groups: GroupUpdateManyWithoutParticipantsInput
+  createdGroups: GroupUpdateManyWithoutCreatorInput
+  channels: ChannelUpdateManyWithoutParticipantsInput
+  createdChannels: ChannelUpdateManyWithoutCreatorInput
+  messages: MessageUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyDataInput {
@@ -764,14 +1618,26 @@ input UserUpdateManyMutationInput {
   image: String
 }
 
-input UserUpdateManyWithoutMeetingInput {
-  create: [UserCreateWithoutMeetingInput!]
+input UserUpdateManyWithoutChannelsInput {
+  create: [UserCreateWithoutChannelsInput!]
   delete: [UserWhereUniqueInput!]
   connect: [UserWhereUniqueInput!]
   set: [UserWhereUniqueInput!]
   disconnect: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutMeetingInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutMeetingInput!]
+  update: [UserUpdateWithWhereUniqueWithoutChannelsInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutChannelsInput!]
+  deleteMany: [UserScalarWhereInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+}
+
+input UserUpdateManyWithoutGroupsInput {
+  create: [UserCreateWithoutGroupsInput!]
+  delete: [UserWhereUniqueInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutGroupsInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutGroupsInput!]
   deleteMany: [UserScalarWhereInput!]
   updateMany: [UserUpdateManyWithWhereNestedInput!]
 }
@@ -781,35 +1647,122 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
+input UserUpdateOneRequiredWithoutCreatedChannelsInput {
+  create: UserCreateWithoutCreatedChannelsInput
+  update: UserUpdateWithoutCreatedChannelsDataInput
+  upsert: UserUpsertWithoutCreatedChannelsInput
   connect: UserWhereUniqueInput
 }
 
-input UserUpdateWithoutMeetingDataInput {
+input UserUpdateOneRequiredWithoutCreatedGroupsInput {
+  create: UserCreateWithoutCreatedGroupsInput
+  update: UserUpdateWithoutCreatedGroupsDataInput
+  upsert: UserUpsertWithoutCreatedGroupsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneRequiredWithoutMessagesInput {
+  create: UserCreateWithoutMessagesInput
+  update: UserUpdateWithoutMessagesDataInput
+  upsert: UserUpsertWithoutMessagesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutChannelsDataInput {
   firstName: String
   lastName: String
   email: String
   password: String
   image: String
+  groups: GroupUpdateManyWithoutParticipantsInput
+  createdGroups: GroupUpdateManyWithoutCreatorInput
+  createdChannels: ChannelUpdateManyWithoutCreatorInput
+  messages: MessageUpdateManyWithoutAuthorInput
 }
 
-input UserUpdateWithWhereUniqueWithoutMeetingInput {
+input UserUpdateWithoutCreatedChannelsDataInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  image: String
+  groups: GroupUpdateManyWithoutParticipantsInput
+  createdGroups: GroupUpdateManyWithoutCreatorInput
+  channels: ChannelUpdateManyWithoutParticipantsInput
+  messages: MessageUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutCreatedGroupsDataInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  image: String
+  groups: GroupUpdateManyWithoutParticipantsInput
+  channels: ChannelUpdateManyWithoutParticipantsInput
+  createdChannels: ChannelUpdateManyWithoutCreatorInput
+  messages: MessageUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutGroupsDataInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  image: String
+  createdGroups: GroupUpdateManyWithoutCreatorInput
+  channels: ChannelUpdateManyWithoutParticipantsInput
+  createdChannels: ChannelUpdateManyWithoutCreatorInput
+  messages: MessageUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutMessagesDataInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  image: String
+  groups: GroupUpdateManyWithoutParticipantsInput
+  createdGroups: GroupUpdateManyWithoutCreatorInput
+  channels: ChannelUpdateManyWithoutParticipantsInput
+  createdChannels: ChannelUpdateManyWithoutCreatorInput
+}
+
+input UserUpdateWithWhereUniqueWithoutChannelsInput {
   where: UserWhereUniqueInput!
-  data: UserUpdateWithoutMeetingDataInput!
+  data: UserUpdateWithoutChannelsDataInput!
 }
 
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
-}
-
-input UserUpsertWithWhereUniqueWithoutMeetingInput {
+input UserUpdateWithWhereUniqueWithoutGroupsInput {
   where: UserWhereUniqueInput!
-  update: UserUpdateWithoutMeetingDataInput!
-  create: UserCreateWithoutMeetingInput!
+  data: UserUpdateWithoutGroupsDataInput!
+}
+
+input UserUpsertWithoutCreatedChannelsInput {
+  update: UserUpdateWithoutCreatedChannelsDataInput!
+  create: UserCreateWithoutCreatedChannelsInput!
+}
+
+input UserUpsertWithoutCreatedGroupsInput {
+  update: UserUpdateWithoutCreatedGroupsDataInput!
+  create: UserCreateWithoutCreatedGroupsInput!
+}
+
+input UserUpsertWithoutMessagesInput {
+  update: UserUpdateWithoutMessagesDataInput!
+  create: UserCreateWithoutMessagesInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutChannelsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutChannelsDataInput!
+  create: UserCreateWithoutChannelsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutGroupsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutGroupsDataInput!
+  create: UserCreateWithoutGroupsInput!
 }
 
 input UserWhereInput {
@@ -913,7 +1866,21 @@ input UserWhereInput {
   image_not_starts_with: String
   image_ends_with: String
   image_not_ends_with: String
-  meeting: MeetingWhereInput
+  groups_every: GroupWhereInput
+  groups_some: GroupWhereInput
+  groups_none: GroupWhereInput
+  createdGroups_every: GroupWhereInput
+  createdGroups_some: GroupWhereInput
+  createdGroups_none: GroupWhereInput
+  channels_every: ChannelWhereInput
+  channels_some: ChannelWhereInput
+  channels_none: ChannelWhereInput
+  createdChannels_every: ChannelWhereInput
+  createdChannels_some: ChannelWhereInput
+  createdChannels_none: ChannelWhereInput
+  messages_every: MessageWhereInput
+  messages_some: MessageWhereInput
+  messages_none: MessageWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

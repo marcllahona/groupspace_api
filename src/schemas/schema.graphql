@@ -2,12 +2,113 @@
 scalar DateTime
 
 type Query {
+  #Returns User profile
   me: User
-  meeting: Meeting
-  meetingByID(id: ID!): Meeting
-  meetingByName(name: String!): Meeting
-  messagesByMeetingID(id: ID!): [Message!]!
-  messagesByMeetingName(name: String!): [Message!]!
+  #Returns all groups that user has joined
+  myGroups(
+    where: GroupWhereInput
+    orderBy: GroupOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Group!]!
+  #Returns only groups that user has created
+  myCreatedGroups(
+    where: GroupWhereInput
+    orderBy: GroupOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Group!]!
+  #All groups that user has joined
+  allGroups(
+    where: GroupWhereInput
+    orderBy: GroupOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Group!]!
+  #Returns a single group using its ID
+  groupByID(id: ID!): Group
+  #Returns a single group using its ID
+  groupByName(name: String!): Group
+
+  #Returns all channels that user has joined and created
+  myChannels(
+    where: ChannelWhereInput
+    orderBy: ChannelOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Channel!]!
+  #Returns all channels that user has created
+  myCreatedChannels(
+    where: ChannelWhereInput
+    orderBy: ChannelOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Channel!]!
+  #All channels that user has joined
+  allChannels(
+    where: ChannelWhereInput
+    orderBy: ChannelOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Channel!]!
+  #Returns a single channel using its ID
+  channelByID(id: ID!): Channel
+
+  channelByGroup(channelName: String!, groupName: String!): Channel
+
+  #Returns all messages of a channel using its ID
+  channelMessages(
+    id: ID!
+    where: MessageWhereInput
+    orderBy: MessageOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Message!]!
+
+  channelMessagesByName(
+    channelName: String!
+    groupName: String!
+    where: MessageWhereInput
+    orderBy: MessageOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Message!]!
+
+  #Returns all messages of a group using its name
+  groupMessages(
+    name: String!
+    where: MessageWhereInput
+    orderBy: MessageOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Message!]!
 }
 
 type Mutation {
@@ -19,22 +120,41 @@ type Mutation {
     password: String!
   ): AuthPayload!
 
-  startMeetingWithName(name: String!, userID: ID!): Meeting!
-  startMeeting(userID: ID!): Meeting!
-  leaveMeetingByID(userID: ID!, id: ID!): Meeting!
-  leaveMeetingByName(userID: ID!, name: String!): Meeting!
-  createMessageByMeetingName(
-    content: String!
-    authorID: ID!
+  createGroup(
     name: String!
+    description: String!
+    category: String!
+    image: String
+    url: String!
+  ): Group!
+  updateGroup(
+    id: ID!
+    name: String
+    description: String
+    category: String
+    image: String
+  ): Group!
+  deleteGroup(id: ID!): Group!
+  leaveGroup(id: ID!): Group!
+
+  createChannel(creatorID: ID!, groupID: ID!, name: String!): Channel!
+  updateChannel(id: ID!, name: String): Channel!
+  deleteChannel(id: ID!): Channel!
+  leaveChannel(id: ID!): Group!
+
+  createMessage(authorID: ID!, channelID: ID!, content: String!): Message!
+  createMessageByName(
+    channelName: String!
+    groupName: String!
+    content: String!
   ): Message!
-  createMessageByMeetingID(content: String!, authorID: ID!, id: ID!): Message!
-  deleteMeeting(meetingID: ID!): Meeting!
 }
 
 type Subscription {
-  onCreateMessageByMeetingID(id: ID!): Message
-  onCreateMessageByMeetingName(name: String!): Message
+  onCreateChannel(groupID: ID!): Channel!
+  onCreateMessage(channelID: ID!): Message!
+  onCreateGroupMessage(name: String!): Message!
+  onCreateMessageByName(channelName: String!, groupName: String!): Message!
 }
 
 type AuthPayload {
@@ -48,6 +168,11 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
+  fullName: String!
   image: String
-  meeting: Meeting
+  groups: [Group!]!
+  createdGroups: [Group!]!
+  channels: [Channel!]!
+  createdChannels: [Channel!]!
+  messages: [Message!]!
 }

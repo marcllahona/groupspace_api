@@ -9,7 +9,11 @@ var models = [
     embedded: false
   },
   {
-    name: "Meeting",
+    name: "Group",
+    embedded: false
+  },
+  {
+    name: "Channel",
     embedded: false
   },
   {

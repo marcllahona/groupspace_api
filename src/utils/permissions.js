@@ -3,9 +3,19 @@ const { isUser } = require('./rules');
 
 const permissions = shield({
   Query: {
-    me: isUser
+    me: isUser,
+    myGroups: isUser,
+    myCreatedGroups: isUser,
+    myChannels: isUser,
+    myCreatedChannels: isUser,
+    channelMessages: isUser
   },
-  Mutation: {},
+  Mutation: {
+    createGroup: isUser,
+    updateGroup: isUser,
+    deleteGroup: isUser,
+    leaveGroup: isUser
+  },
   Subscription: {}
 });
 

@@ -16,7 +16,8 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
-  meeting: (where?: MeetingWhereInput) => Promise<boolean>;
+  channel: (where?: ChannelWhereInput) => Promise<boolean>;
+  group: (where?: GroupWhereInput) => Promise<boolean>;
   message: (where?: MessageWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
@@ -40,25 +41,44 @@ export interface Prisma {
    * Queries
    */
 
-  meeting: (where: MeetingWhereUniqueInput) => MeetingNullablePromise;
-  meetings: (args?: {
-    where?: MeetingWhereInput;
-    orderBy?: MeetingOrderByInput;
+  channel: (where: ChannelWhereUniqueInput) => ChannelNullablePromise;
+  channels: (args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<Meeting>;
-  meetingsConnection: (args?: {
-    where?: MeetingWhereInput;
-    orderBy?: MeetingOrderByInput;
+  }) => FragmentableArray<Channel>;
+  channelsConnection: (args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => MeetingConnectionPromise;
+  }) => ChannelConnectionPromise;
+  group: (where: GroupWhereUniqueInput) => GroupNullablePromise;
+  groups: (args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Group>;
+  groupsConnection: (args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GroupConnectionPromise;
   message: (where: MessageWhereUniqueInput) => MessageNullablePromise;
   messages: (args?: {
     where?: MessageWhereInput;
@@ -103,22 +123,38 @@ export interface Prisma {
    * Mutations
    */
 
-  createMeeting: (data: MeetingCreateInput) => MeetingPromise;
-  updateMeeting: (args: {
-    data: MeetingUpdateInput;
-    where: MeetingWhereUniqueInput;
-  }) => MeetingPromise;
-  updateManyMeetings: (args: {
-    data: MeetingUpdateManyMutationInput;
-    where?: MeetingWhereInput;
+  createChannel: (data: ChannelCreateInput) => ChannelPromise;
+  updateChannel: (args: {
+    data: ChannelUpdateInput;
+    where: ChannelWhereUniqueInput;
+  }) => ChannelPromise;
+  updateManyChannels: (args: {
+    data: ChannelUpdateManyMutationInput;
+    where?: ChannelWhereInput;
   }) => BatchPayloadPromise;
-  upsertMeeting: (args: {
-    where: MeetingWhereUniqueInput;
-    create: MeetingCreateInput;
-    update: MeetingUpdateInput;
-  }) => MeetingPromise;
-  deleteMeeting: (where: MeetingWhereUniqueInput) => MeetingPromise;
-  deleteManyMeetings: (where?: MeetingWhereInput) => BatchPayloadPromise;
+  upsertChannel: (args: {
+    where: ChannelWhereUniqueInput;
+    create: ChannelCreateInput;
+    update: ChannelUpdateInput;
+  }) => ChannelPromise;
+  deleteChannel: (where: ChannelWhereUniqueInput) => ChannelPromise;
+  deleteManyChannels: (where?: ChannelWhereInput) => BatchPayloadPromise;
+  createGroup: (data: GroupCreateInput) => GroupPromise;
+  updateGroup: (args: {
+    data: GroupUpdateInput;
+    where: GroupWhereUniqueInput;
+  }) => GroupPromise;
+  updateManyGroups: (args: {
+    data: GroupUpdateManyMutationInput;
+    where?: GroupWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGroup: (args: {
+    where: GroupWhereUniqueInput;
+    create: GroupCreateInput;
+    update: GroupUpdateInput;
+  }) => GroupPromise;
+  deleteGroup: (where: GroupWhereUniqueInput) => GroupPromise;
+  deleteManyGroups: (where?: GroupWhereInput) => BatchPayloadPromise;
   createMessage: (data: MessageCreateInput) => MessagePromise;
   updateMessage: (args: {
     data: MessageUpdateInput;
@@ -160,9 +196,12 @@ export interface Prisma {
 }
 
 export interface Subscription {
-  meeting: (
-    where?: MeetingSubscriptionWhereInput
-  ) => MeetingSubscriptionPayloadSubscription;
+  channel: (
+    where?: ChannelSubscriptionWhereInput
+  ) => ChannelSubscriptionPayloadSubscription;
+  group: (
+    where?: GroupSubscriptionWhereInput
+  ) => GroupSubscriptionPayloadSubscription;
   message: (
     where?: MessageSubscriptionWhereInput
   ) => MessageSubscriptionPayloadSubscription;
@@ -178,6 +217,26 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type GroupOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "description_ASC"
+  | "description_DESC"
+  | "category_ASC"
+  | "category_DESC"
+  | "image_ASC"
+  | "image_DESC"
+  | "backgroundImage_ASC"
+  | "backgroundImage_DESC"
+  | "url_ASC"
+  | "url_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -197,6 +256,18 @@ export type UserOrderByInput =
   | "image_ASC"
   | "image_DESC";
 
+export type ChannelOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "description_ASC"
+  | "description_DESC";
+
 export type MessageOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -207,24 +278,138 @@ export type MessageOrderByInput =
   | "content_ASC"
   | "content_DESC";
 
-export type MeetingOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
-  | "name_ASC"
-  | "name_DESC"
-  | "access_ASC"
-  | "access_DESC";
-
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export type MeetingWhereUniqueInput = AtLeastOne<{
+export type ChannelWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
-  name?: Maybe<ID_Input>;
 }>;
+
+export interface GroupWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  creator?: Maybe<UserWhereInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  category?: Maybe<String>;
+  category_not?: Maybe<String>;
+  category_in?: Maybe<String[] | String>;
+  category_not_in?: Maybe<String[] | String>;
+  category_lt?: Maybe<String>;
+  category_lte?: Maybe<String>;
+  category_gt?: Maybe<String>;
+  category_gte?: Maybe<String>;
+  category_contains?: Maybe<String>;
+  category_not_contains?: Maybe<String>;
+  category_starts_with?: Maybe<String>;
+  category_not_starts_with?: Maybe<String>;
+  category_ends_with?: Maybe<String>;
+  category_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  backgroundImage_not?: Maybe<String>;
+  backgroundImage_in?: Maybe<String[] | String>;
+  backgroundImage_not_in?: Maybe<String[] | String>;
+  backgroundImage_lt?: Maybe<String>;
+  backgroundImage_lte?: Maybe<String>;
+  backgroundImage_gt?: Maybe<String>;
+  backgroundImage_gte?: Maybe<String>;
+  backgroundImage_contains?: Maybe<String>;
+  backgroundImage_not_contains?: Maybe<String>;
+  backgroundImage_starts_with?: Maybe<String>;
+  backgroundImage_not_starts_with?: Maybe<String>;
+  backgroundImage_ends_with?: Maybe<String>;
+  backgroundImage_not_ends_with?: Maybe<String>;
+  url?: Maybe<String>;
+  url_not?: Maybe<String>;
+  url_in?: Maybe<String[] | String>;
+  url_not_in?: Maybe<String[] | String>;
+  url_lt?: Maybe<String>;
+  url_lte?: Maybe<String>;
+  url_gt?: Maybe<String>;
+  url_gte?: Maybe<String>;
+  url_contains?: Maybe<String>;
+  url_not_contains?: Maybe<String>;
+  url_starts_with?: Maybe<String>;
+  url_not_starts_with?: Maybe<String>;
+  url_ends_with?: Maybe<String>;
+  url_not_ends_with?: Maybe<String>;
+  participants_every?: Maybe<UserWhereInput>;
+  participants_some?: Maybe<UserWhereInput>;
+  participants_none?: Maybe<UserWhereInput>;
+  channels_every?: Maybe<ChannelWhereInput>;
+  channels_some?: Maybe<ChannelWhereInput>;
+  channels_none?: Maybe<ChannelWhereInput>;
+  AND?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  OR?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  NOT?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+}
 
 export interface UserWhereInput {
   id?: Maybe<ID_Input>;
@@ -327,13 +512,27 @@ export interface UserWhereInput {
   image_not_starts_with?: Maybe<String>;
   image_ends_with?: Maybe<String>;
   image_not_ends_with?: Maybe<String>;
-  meeting?: Maybe<MeetingWhereInput>;
+  groups_every?: Maybe<GroupWhereInput>;
+  groups_some?: Maybe<GroupWhereInput>;
+  groups_none?: Maybe<GroupWhereInput>;
+  createdGroups_every?: Maybe<GroupWhereInput>;
+  createdGroups_some?: Maybe<GroupWhereInput>;
+  createdGroups_none?: Maybe<GroupWhereInput>;
+  channels_every?: Maybe<ChannelWhereInput>;
+  channels_some?: Maybe<ChannelWhereInput>;
+  channels_none?: Maybe<ChannelWhereInput>;
+  createdChannels_every?: Maybe<ChannelWhereInput>;
+  createdChannels_some?: Maybe<ChannelWhereInput>;
+  createdChannels_none?: Maybe<ChannelWhereInput>;
+  messages_every?: Maybe<MessageWhereInput>;
+  messages_some?: Maybe<MessageWhereInput>;
+  messages_none?: Maybe<MessageWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface MeetingWhereInput {
+export interface ChannelWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -364,43 +563,45 @@ export interface MeetingWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
-  name?: Maybe<ID_Input>;
-  name_not?: Maybe<ID_Input>;
-  name_in?: Maybe<ID_Input[] | ID_Input>;
-  name_not_in?: Maybe<ID_Input[] | ID_Input>;
-  name_lt?: Maybe<ID_Input>;
-  name_lte?: Maybe<ID_Input>;
-  name_gt?: Maybe<ID_Input>;
-  name_gte?: Maybe<ID_Input>;
-  name_contains?: Maybe<ID_Input>;
-  name_not_contains?: Maybe<ID_Input>;
-  name_starts_with?: Maybe<ID_Input>;
-  name_not_starts_with?: Maybe<ID_Input>;
-  name_ends_with?: Maybe<ID_Input>;
-  name_not_ends_with?: Maybe<ID_Input>;
+  creator?: Maybe<UserWhereInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
   participants_every?: Maybe<UserWhereInput>;
   participants_some?: Maybe<UserWhereInput>;
   participants_none?: Maybe<UserWhereInput>;
   messages_every?: Maybe<MessageWhereInput>;
   messages_some?: Maybe<MessageWhereInput>;
   messages_none?: Maybe<MessageWhereInput>;
-  access?: Maybe<String>;
-  access_not?: Maybe<String>;
-  access_in?: Maybe<String[] | String>;
-  access_not_in?: Maybe<String[] | String>;
-  access_lt?: Maybe<String>;
-  access_lte?: Maybe<String>;
-  access_gt?: Maybe<String>;
-  access_gte?: Maybe<String>;
-  access_contains?: Maybe<String>;
-  access_not_contains?: Maybe<String>;
-  access_starts_with?: Maybe<String>;
-  access_not_starts_with?: Maybe<String>;
-  access_ends_with?: Maybe<String>;
-  access_not_ends_with?: Maybe<String>;
-  AND?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
-  OR?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
-  NOT?: Maybe<MeetingWhereInput[] | MeetingWhereInput>;
+  group?: Maybe<GroupWhereInput>;
+  AND?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
+  OR?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
+  NOT?: Maybe<ChannelWhereInput[] | ChannelWhereInput>;
 }
 
 export interface MessageWhereInput {
@@ -448,12 +649,17 @@ export interface MessageWhereInput {
   content_not_starts_with?: Maybe<String>;
   content_ends_with?: Maybe<String>;
   content_not_ends_with?: Maybe<String>;
-  meeting?: Maybe<MeetingWhereInput>;
+  channel?: Maybe<ChannelWhereInput>;
   author?: Maybe<UserWhereInput>;
   AND?: Maybe<MessageWhereInput[] | MessageWhereInput>;
   OR?: Maybe<MessageWhereInput[] | MessageWhereInput>;
   NOT?: Maybe<MessageWhereInput[] | MessageWhereInput>;
 }
+
+export type GroupWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
 
 export type MessageWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
@@ -464,92 +670,490 @@ export type UserWhereUniqueInput = AtLeastOne<{
   email?: Maybe<String>;
 }>;
 
-export interface MeetingCreateInput {
+export interface ChannelCreateInput {
   id?: Maybe<ID_Input>;
-  name: ID_Input;
-  participants?: Maybe<UserCreateManyWithoutMeetingInput>;
-  messages?: Maybe<MessageCreateManyWithoutMeetingInput>;
-  access: String;
+  creator: UserCreateOneWithoutCreatedChannelsInput;
+  name: String;
+  description?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
+  group: GroupCreateOneWithoutChannelsInput;
 }
 
-export interface UserCreateManyWithoutMeetingInput {
-  create?: Maybe<
-    UserCreateWithoutMeetingInput[] | UserCreateWithoutMeetingInput
-  >;
-  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+export interface UserCreateOneWithoutCreatedChannelsInput {
+  create?: Maybe<UserCreateWithoutCreatedChannelsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutMeetingInput {
+export interface UserCreateWithoutCreatedChannelsInput {
   id?: Maybe<ID_Input>;
   firstName: String;
   lastName: String;
   email: String;
   password: String;
   image?: Maybe<String>;
+  groups?: Maybe<GroupCreateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupCreateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelCreateManyWithoutParticipantsInput>;
+  messages?: Maybe<MessageCreateManyWithoutAuthorInput>;
 }
 
-export interface MessageCreateManyWithoutMeetingInput {
+export interface GroupCreateManyWithoutParticipantsInput {
   create?: Maybe<
-    MessageCreateWithoutMeetingInput[] | MessageCreateWithoutMeetingInput
+    GroupCreateWithoutParticipantsInput[] | GroupCreateWithoutParticipantsInput
+  >;
+  connect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+}
+
+export interface GroupCreateWithoutParticipantsInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedGroupsInput;
+  name: String;
+  description: String;
+  category: String;
+  topics?: Maybe<GroupCreatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  channels?: Maybe<ChannelCreateManyWithoutGroupInput>;
+}
+
+export interface UserCreateOneWithoutCreatedGroupsInput {
+  create?: Maybe<UserCreateWithoutCreatedGroupsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutCreatedGroupsInput {
+  id?: Maybe<ID_Input>;
+  firstName: String;
+  lastName: String;
+  email: String;
+  password: String;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupCreateManyWithoutParticipantsInput>;
+  channels?: Maybe<ChannelCreateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelCreateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageCreateManyWithoutAuthorInput>;
+}
+
+export interface ChannelCreateManyWithoutParticipantsInput {
+  create?: Maybe<
+    | ChannelCreateWithoutParticipantsInput[]
+    | ChannelCreateWithoutParticipantsInput
+  >;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutParticipantsInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedChannelsInput;
+  name: String;
+  description?: Maybe<String>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
+  group: GroupCreateOneWithoutChannelsInput;
+}
+
+export interface MessageCreateManyWithoutChannelInput {
+  create?: Maybe<
+    MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
   >;
   connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
 }
 
-export interface MessageCreateWithoutMeetingInput {
+export interface MessageCreateWithoutChannelInput {
   id?: Maybe<ID_Input>;
   content: String;
-  author: UserCreateOneInput;
+  author: UserCreateOneWithoutMessagesInput;
 }
 
-export interface UserCreateOneInput {
-  create?: Maybe<UserCreateInput>;
+export interface UserCreateOneWithoutMessagesInput {
+  create?: Maybe<UserCreateWithoutMessagesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateInput {
+export interface UserCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
   firstName: String;
   lastName: String;
   email: String;
   password: String;
   image?: Maybe<String>;
-  meeting?: Maybe<MeetingCreateOneWithoutParticipantsInput>;
+  groups?: Maybe<GroupCreateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupCreateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelCreateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelCreateManyWithoutCreatorInput>;
 }
 
-export interface MeetingCreateOneWithoutParticipantsInput {
-  create?: Maybe<MeetingCreateWithoutParticipantsInput>;
-  connect?: Maybe<MeetingWhereUniqueInput>;
-}
-
-export interface MeetingCreateWithoutParticipantsInput {
-  id?: Maybe<ID_Input>;
-  name: ID_Input;
-  messages?: Maybe<MessageCreateManyWithoutMeetingInput>;
-  access: String;
-}
-
-export interface MeetingUpdateInput {
-  name?: Maybe<ID_Input>;
-  participants?: Maybe<UserUpdateManyWithoutMeetingInput>;
-  messages?: Maybe<MessageUpdateManyWithoutMeetingInput>;
-  access?: Maybe<String>;
-}
-
-export interface UserUpdateManyWithoutMeetingInput {
+export interface GroupCreateManyWithoutCreatorInput {
   create?: Maybe<
-    UserCreateWithoutMeetingInput[] | UserCreateWithoutMeetingInput
+    GroupCreateWithoutCreatorInput[] | GroupCreateWithoutCreatorInput
   >;
+  connect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+}
+
+export interface GroupCreateWithoutCreatorInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description: String;
+  category: String;
+  topics?: Maybe<GroupCreatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutGroupsInput>;
+  channels?: Maybe<ChannelCreateManyWithoutGroupInput>;
+}
+
+export interface GroupCreatetopicsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface UserCreateManyWithoutGroupsInput {
+  create?: Maybe<UserCreateWithoutGroupsInput[] | UserCreateWithoutGroupsInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutGroupsInput {
+  id?: Maybe<ID_Input>;
+  firstName: String;
+  lastName: String;
+  email: String;
+  password: String;
+  image?: Maybe<String>;
+  createdGroups?: Maybe<GroupCreateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelCreateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelCreateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageCreateManyWithoutAuthorInput>;
+}
+
+export interface ChannelCreateManyWithoutCreatorInput {
+  create?: Maybe<
+    ChannelCreateWithoutCreatorInput[] | ChannelCreateWithoutCreatorInput
+  >;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutCreatorInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
+  group: GroupCreateOneWithoutChannelsInput;
+}
+
+export interface UserCreateManyWithoutChannelsInput {
+  create?: Maybe<
+    UserCreateWithoutChannelsInput[] | UserCreateWithoutChannelsInput
+  >;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutChannelsInput {
+  id?: Maybe<ID_Input>;
+  firstName: String;
+  lastName: String;
+  email: String;
+  password: String;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupCreateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupCreateManyWithoutCreatorInput>;
+  createdChannels?: Maybe<ChannelCreateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageCreateManyWithoutAuthorInput>;
+}
+
+export interface MessageCreateManyWithoutAuthorInput {
+  create?: Maybe<
+    MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
+  >;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+}
+
+export interface MessageCreateWithoutAuthorInput {
+  id?: Maybe<ID_Input>;
+  content: String;
+  channel: ChannelCreateOneWithoutMessagesInput;
+}
+
+export interface ChannelCreateOneWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutMessagesInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedChannelsInput;
+  name: String;
+  description?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutChannelsInput>;
+  group: GroupCreateOneWithoutChannelsInput;
+}
+
+export interface GroupCreateOneWithoutChannelsInput {
+  create?: Maybe<GroupCreateWithoutChannelsInput>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export interface GroupCreateWithoutChannelsInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedGroupsInput;
+  name: String;
+  description: String;
+  category: String;
+  topics?: Maybe<GroupCreatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutGroupsInput>;
+}
+
+export interface ChannelCreateManyWithoutGroupInput {
+  create?: Maybe<
+    ChannelCreateWithoutGroupInput[] | ChannelCreateWithoutGroupInput
+  >;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+}
+
+export interface ChannelCreateWithoutGroupInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedChannelsInput;
+  name: String;
+  description?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageCreateManyWithoutChannelInput>;
+}
+
+export interface ChannelUpdateInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedChannelsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+  group?: Maybe<GroupUpdateOneRequiredWithoutChannelsInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutCreatedChannelsInput {
+  create?: Maybe<UserCreateWithoutCreatedChannelsInput>;
+  update?: Maybe<UserUpdateWithoutCreatedChannelsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutCreatedChannelsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutCreatedChannelsDataInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupUpdateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupUpdateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutParticipantsInput>;
+  messages?: Maybe<MessageUpdateManyWithoutAuthorInput>;
+}
+
+export interface GroupUpdateManyWithoutParticipantsInput {
+  create?: Maybe<
+    GroupCreateWithoutParticipantsInput[] | GroupCreateWithoutParticipantsInput
+  >;
+  delete?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  connect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  set?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  disconnect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  update?: Maybe<
+    | GroupUpdateWithWhereUniqueWithoutParticipantsInput[]
+    | GroupUpdateWithWhereUniqueWithoutParticipantsInput
+  >;
+  upsert?: Maybe<
+    | GroupUpsertWithWhereUniqueWithoutParticipantsInput[]
+    | GroupUpsertWithWhereUniqueWithoutParticipantsInput
+  >;
+  deleteMany?: Maybe<GroupScalarWhereInput[] | GroupScalarWhereInput>;
+  updateMany?: Maybe<
+    GroupUpdateManyWithWhereNestedInput[] | GroupUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface GroupUpdateWithWhereUniqueWithoutParticipantsInput {
+  where: GroupWhereUniqueInput;
+  data: GroupUpdateWithoutParticipantsDataInput;
+}
+
+export interface GroupUpdateWithoutParticipantsDataInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedGroupsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  channels?: Maybe<ChannelUpdateManyWithoutGroupInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutCreatedGroupsInput {
+  create?: Maybe<UserCreateWithoutCreatedGroupsInput>;
+  update?: Maybe<UserUpdateWithoutCreatedGroupsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutCreatedGroupsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutCreatedGroupsDataInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupUpdateManyWithoutParticipantsInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelUpdateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutAuthorInput>;
+}
+
+export interface ChannelUpdateManyWithoutParticipantsInput {
+  create?: Maybe<
+    | ChannelCreateWithoutParticipantsInput[]
+    | ChannelCreateWithoutParticipantsInput
+  >;
+  delete?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  set?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  disconnect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  update?: Maybe<
+    | ChannelUpdateWithWhereUniqueWithoutParticipantsInput[]
+    | ChannelUpdateWithWhereUniqueWithoutParticipantsInput
+  >;
+  upsert?: Maybe<
+    | ChannelUpsertWithWhereUniqueWithoutParticipantsInput[]
+    | ChannelUpsertWithWhereUniqueWithoutParticipantsInput
+  >;
+  deleteMany?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  updateMany?: Maybe<
+    | ChannelUpdateManyWithWhereNestedInput[]
+    | ChannelUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ChannelUpdateWithWhereUniqueWithoutParticipantsInput {
+  where: ChannelWhereUniqueInput;
+  data: ChannelUpdateWithoutParticipantsDataInput;
+}
+
+export interface ChannelUpdateWithoutParticipantsDataInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedChannelsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+  group?: Maybe<GroupUpdateOneRequiredWithoutChannelsInput>;
+}
+
+export interface MessageUpdateManyWithoutChannelInput {
+  create?: Maybe<
+    MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
+  >;
+  delete?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  set?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  disconnect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  update?: Maybe<
+    | MessageUpdateWithWhereUniqueWithoutChannelInput[]
+    | MessageUpdateWithWhereUniqueWithoutChannelInput
+  >;
+  upsert?: Maybe<
+    | MessageUpsertWithWhereUniqueWithoutChannelInput[]
+    | MessageUpsertWithWhereUniqueWithoutChannelInput
+  >;
+  deleteMany?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  updateMany?: Maybe<
+    | MessageUpdateManyWithWhereNestedInput[]
+    | MessageUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput;
+  data: MessageUpdateWithoutChannelDataInput;
+}
+
+export interface MessageUpdateWithoutChannelDataInput {
+  content?: Maybe<String>;
+  author?: Maybe<UserUpdateOneRequiredWithoutMessagesInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutMessagesInput {
+  create?: Maybe<UserCreateWithoutMessagesInput>;
+  update?: Maybe<UserUpdateWithoutMessagesDataInput>;
+  upsert?: Maybe<UserUpsertWithoutMessagesInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutMessagesDataInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupUpdateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupUpdateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelUpdateManyWithoutCreatorInput>;
+}
+
+export interface GroupUpdateManyWithoutCreatorInput {
+  create?: Maybe<
+    GroupCreateWithoutCreatorInput[] | GroupCreateWithoutCreatorInput
+  >;
+  delete?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  connect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  set?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  disconnect?: Maybe<GroupWhereUniqueInput[] | GroupWhereUniqueInput>;
+  update?: Maybe<
+    | GroupUpdateWithWhereUniqueWithoutCreatorInput[]
+    | GroupUpdateWithWhereUniqueWithoutCreatorInput
+  >;
+  upsert?: Maybe<
+    | GroupUpsertWithWhereUniqueWithoutCreatorInput[]
+    | GroupUpsertWithWhereUniqueWithoutCreatorInput
+  >;
+  deleteMany?: Maybe<GroupScalarWhereInput[] | GroupScalarWhereInput>;
+  updateMany?: Maybe<
+    GroupUpdateManyWithWhereNestedInput[] | GroupUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface GroupUpdateWithWhereUniqueWithoutCreatorInput {
+  where: GroupWhereUniqueInput;
+  data: GroupUpdateWithoutCreatorDataInput;
+}
+
+export interface GroupUpdateWithoutCreatorDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutGroupsInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutGroupInput>;
+}
+
+export interface GroupUpdatetopicsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface UserUpdateManyWithoutGroupsInput {
+  create?: Maybe<UserCreateWithoutGroupsInput[] | UserCreateWithoutGroupsInput>;
   delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
   update?: Maybe<
-    | UserUpdateWithWhereUniqueWithoutMeetingInput[]
-    | UserUpdateWithWhereUniqueWithoutMeetingInput
+    | UserUpdateWithWhereUniqueWithoutGroupsInput[]
+    | UserUpdateWithWhereUniqueWithoutGroupsInput
   >;
   upsert?: Maybe<
-    | UserUpsertWithWhereUniqueWithoutMeetingInput[]
-    | UserUpsertWithWhereUniqueWithoutMeetingInput
+    | UserUpsertWithWhereUniqueWithoutGroupsInput[]
+    | UserUpsertWithWhereUniqueWithoutGroupsInput
   >;
   deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
   updateMany?: Maybe<
@@ -557,23 +1161,244 @@ export interface UserUpdateManyWithoutMeetingInput {
   >;
 }
 
-export interface UserUpdateWithWhereUniqueWithoutMeetingInput {
+export interface UserUpdateWithWhereUniqueWithoutGroupsInput {
   where: UserWhereUniqueInput;
-  data: UserUpdateWithoutMeetingDataInput;
+  data: UserUpdateWithoutGroupsDataInput;
 }
 
-export interface UserUpdateWithoutMeetingDataInput {
+export interface UserUpdateWithoutGroupsDataInput {
   firstName?: Maybe<String>;
   lastName?: Maybe<String>;
   email?: Maybe<String>;
   password?: Maybe<String>;
   image?: Maybe<String>;
+  createdGroups?: Maybe<GroupUpdateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelUpdateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutAuthorInput>;
 }
 
-export interface UserUpsertWithWhereUniqueWithoutMeetingInput {
+export interface ChannelUpdateManyWithoutCreatorInput {
+  create?: Maybe<
+    ChannelCreateWithoutCreatorInput[] | ChannelCreateWithoutCreatorInput
+  >;
+  delete?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  set?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  disconnect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  update?: Maybe<
+    | ChannelUpdateWithWhereUniqueWithoutCreatorInput[]
+    | ChannelUpdateWithWhereUniqueWithoutCreatorInput
+  >;
+  upsert?: Maybe<
+    | ChannelUpsertWithWhereUniqueWithoutCreatorInput[]
+    | ChannelUpsertWithWhereUniqueWithoutCreatorInput
+  >;
+  deleteMany?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  updateMany?: Maybe<
+    | ChannelUpdateManyWithWhereNestedInput[]
+    | ChannelUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ChannelUpdateWithWhereUniqueWithoutCreatorInput {
+  where: ChannelWhereUniqueInput;
+  data: ChannelUpdateWithoutCreatorDataInput;
+}
+
+export interface ChannelUpdateWithoutCreatorDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+  group?: Maybe<GroupUpdateOneRequiredWithoutChannelsInput>;
+}
+
+export interface UserUpdateManyWithoutChannelsInput {
+  create?: Maybe<
+    UserCreateWithoutChannelsInput[] | UserCreateWithoutChannelsInput
+  >;
+  delete?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  connect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  set?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  disconnect?: Maybe<UserWhereUniqueInput[] | UserWhereUniqueInput>;
+  update?: Maybe<
+    | UserUpdateWithWhereUniqueWithoutChannelsInput[]
+    | UserUpdateWithWhereUniqueWithoutChannelsInput
+  >;
+  upsert?: Maybe<
+    | UserUpsertWithWhereUniqueWithoutChannelsInput[]
+    | UserUpsertWithWhereUniqueWithoutChannelsInput
+  >;
+  deleteMany?: Maybe<UserScalarWhereInput[] | UserScalarWhereInput>;
+  updateMany?: Maybe<
+    UserUpdateManyWithWhereNestedInput[] | UserUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithWhereUniqueWithoutChannelsInput {
   where: UserWhereUniqueInput;
-  update: UserUpdateWithoutMeetingDataInput;
-  create: UserCreateWithoutMeetingInput;
+  data: UserUpdateWithoutChannelsDataInput;
+}
+
+export interface UserUpdateWithoutChannelsDataInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupUpdateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupUpdateManyWithoutCreatorInput>;
+  createdChannels?: Maybe<ChannelUpdateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutAuthorInput>;
+}
+
+export interface MessageUpdateManyWithoutAuthorInput {
+  create?: Maybe<
+    MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
+  >;
+  delete?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  set?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  disconnect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
+  update?: Maybe<
+    | MessageUpdateWithWhereUniqueWithoutAuthorInput[]
+    | MessageUpdateWithWhereUniqueWithoutAuthorInput
+  >;
+  upsert?: Maybe<
+    | MessageUpsertWithWhereUniqueWithoutAuthorInput[]
+    | MessageUpsertWithWhereUniqueWithoutAuthorInput
+  >;
+  deleteMany?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  updateMany?: Maybe<
+    | MessageUpdateManyWithWhereNestedInput[]
+    | MessageUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutAuthorInput {
+  where: MessageWhereUniqueInput;
+  data: MessageUpdateWithoutAuthorDataInput;
+}
+
+export interface MessageUpdateWithoutAuthorDataInput {
+  content?: Maybe<String>;
+  channel?: Maybe<ChannelUpdateOneRequiredWithoutMessagesInput>;
+}
+
+export interface ChannelUpdateOneRequiredWithoutMessagesInput {
+  create?: Maybe<ChannelCreateWithoutMessagesInput>;
+  update?: Maybe<ChannelUpdateWithoutMessagesDataInput>;
+  upsert?: Maybe<ChannelUpsertWithoutMessagesInput>;
+  connect?: Maybe<ChannelWhereUniqueInput>;
+}
+
+export interface ChannelUpdateWithoutMessagesDataInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedChannelsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutChannelsInput>;
+  group?: Maybe<GroupUpdateOneRequiredWithoutChannelsInput>;
+}
+
+export interface GroupUpdateOneRequiredWithoutChannelsInput {
+  create?: Maybe<GroupCreateWithoutChannelsInput>;
+  update?: Maybe<GroupUpdateWithoutChannelsDataInput>;
+  upsert?: Maybe<GroupUpsertWithoutChannelsInput>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export interface GroupUpdateWithoutChannelsDataInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedGroupsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutGroupsInput>;
+}
+
+export interface GroupUpsertWithoutChannelsInput {
+  update: GroupUpdateWithoutChannelsDataInput;
+  create: GroupCreateWithoutChannelsInput;
+}
+
+export interface ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput;
+  create: ChannelCreateWithoutMessagesInput;
+}
+
+export interface MessageUpsertWithWhereUniqueWithoutAuthorInput {
+  where: MessageWhereUniqueInput;
+  update: MessageUpdateWithoutAuthorDataInput;
+  create: MessageCreateWithoutAuthorInput;
+}
+
+export interface MessageScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  content?: Maybe<String>;
+  content_not?: Maybe<String>;
+  content_in?: Maybe<String[] | String>;
+  content_not_in?: Maybe<String[] | String>;
+  content_lt?: Maybe<String>;
+  content_lte?: Maybe<String>;
+  content_gt?: Maybe<String>;
+  content_gte?: Maybe<String>;
+  content_contains?: Maybe<String>;
+  content_not_contains?: Maybe<String>;
+  content_starts_with?: Maybe<String>;
+  content_not_starts_with?: Maybe<String>;
+  content_ends_with?: Maybe<String>;
+  content_not_ends_with?: Maybe<String>;
+  AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+}
+
+export interface MessageUpdateManyWithWhereNestedInput {
+  where: MessageScalarWhereInput;
+  data: MessageUpdateManyDataInput;
+}
+
+export interface MessageUpdateManyDataInput {
+  content?: Maybe<String>;
+}
+
+export interface UserUpsertWithWhereUniqueWithoutChannelsInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutChannelsDataInput;
+  create: UserCreateWithoutChannelsInput;
 }
 
 export interface UserScalarWhereInput {
@@ -695,87 +1520,13 @@ export interface UserUpdateManyDataInput {
   image?: Maybe<String>;
 }
 
-export interface MessageUpdateManyWithoutMeetingInput {
-  create?: Maybe<
-    MessageCreateWithoutMeetingInput[] | MessageCreateWithoutMeetingInput
-  >;
-  delete?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
-  connect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
-  set?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
-  disconnect?: Maybe<MessageWhereUniqueInput[] | MessageWhereUniqueInput>;
-  update?: Maybe<
-    | MessageUpdateWithWhereUniqueWithoutMeetingInput[]
-    | MessageUpdateWithWhereUniqueWithoutMeetingInput
-  >;
-  upsert?: Maybe<
-    | MessageUpsertWithWhereUniqueWithoutMeetingInput[]
-    | MessageUpsertWithWhereUniqueWithoutMeetingInput
-  >;
-  deleteMany?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-  updateMany?: Maybe<
-    | MessageUpdateManyWithWhereNestedInput[]
-    | MessageUpdateManyWithWhereNestedInput
-  >;
+export interface ChannelUpsertWithWhereUniqueWithoutCreatorInput {
+  where: ChannelWhereUniqueInput;
+  update: ChannelUpdateWithoutCreatorDataInput;
+  create: ChannelCreateWithoutCreatorInput;
 }
 
-export interface MessageUpdateWithWhereUniqueWithoutMeetingInput {
-  where: MessageWhereUniqueInput;
-  data: MessageUpdateWithoutMeetingDataInput;
-}
-
-export interface MessageUpdateWithoutMeetingDataInput {
-  content?: Maybe<String>;
-  author?: Maybe<UserUpdateOneRequiredInput>;
-}
-
-export interface UserUpdateOneRequiredInput {
-  create?: Maybe<UserCreateInput>;
-  update?: Maybe<UserUpdateDataInput>;
-  upsert?: Maybe<UserUpsertNestedInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateDataInput {
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  image?: Maybe<String>;
-  meeting?: Maybe<MeetingUpdateOneWithoutParticipantsInput>;
-}
-
-export interface MeetingUpdateOneWithoutParticipantsInput {
-  create?: Maybe<MeetingCreateWithoutParticipantsInput>;
-  update?: Maybe<MeetingUpdateWithoutParticipantsDataInput>;
-  upsert?: Maybe<MeetingUpsertWithoutParticipantsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<MeetingWhereUniqueInput>;
-}
-
-export interface MeetingUpdateWithoutParticipantsDataInput {
-  name?: Maybe<ID_Input>;
-  messages?: Maybe<MessageUpdateManyWithoutMeetingInput>;
-  access?: Maybe<String>;
-}
-
-export interface MeetingUpsertWithoutParticipantsInput {
-  update: MeetingUpdateWithoutParticipantsDataInput;
-  create: MeetingCreateWithoutParticipantsInput;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface MessageUpsertWithWhereUniqueWithoutMeetingInput {
-  where: MessageWhereUniqueInput;
-  update: MessageUpdateWithoutMeetingDataInput;
-  create: MessageCreateWithoutMeetingInput;
-}
-
-export interface MessageScalarWhereInput {
+export interface ChannelScalarWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -806,84 +1557,342 @@ export interface MessageScalarWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
-  content?: Maybe<String>;
-  content_not?: Maybe<String>;
-  content_in?: Maybe<String[] | String>;
-  content_not_in?: Maybe<String[] | String>;
-  content_lt?: Maybe<String>;
-  content_lte?: Maybe<String>;
-  content_gt?: Maybe<String>;
-  content_gte?: Maybe<String>;
-  content_contains?: Maybe<String>;
-  content_not_contains?: Maybe<String>;
-  content_starts_with?: Maybe<String>;
-  content_not_starts_with?: Maybe<String>;
-  content_ends_with?: Maybe<String>;
-  content_not_ends_with?: Maybe<String>;
-  AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-  OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
-  NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  AND?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  OR?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  NOT?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
 }
 
-export interface MessageUpdateManyWithWhereNestedInput {
-  where: MessageScalarWhereInput;
-  data: MessageUpdateManyDataInput;
+export interface ChannelUpdateManyWithWhereNestedInput {
+  where: ChannelScalarWhereInput;
+  data: ChannelUpdateManyDataInput;
 }
 
-export interface MessageUpdateManyDataInput {
-  content?: Maybe<String>;
+export interface ChannelUpdateManyDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
 }
 
-export interface MeetingUpdateManyMutationInput {
-  name?: Maybe<ID_Input>;
-  access?: Maybe<String>;
+export interface UserUpsertWithWhereUniqueWithoutGroupsInput {
+  where: UserWhereUniqueInput;
+  update: UserUpdateWithoutGroupsDataInput;
+  create: UserCreateWithoutGroupsInput;
+}
+
+export interface ChannelUpdateManyWithoutGroupInput {
+  create?: Maybe<
+    ChannelCreateWithoutGroupInput[] | ChannelCreateWithoutGroupInput
+  >;
+  delete?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  connect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  set?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  disconnect?: Maybe<ChannelWhereUniqueInput[] | ChannelWhereUniqueInput>;
+  update?: Maybe<
+    | ChannelUpdateWithWhereUniqueWithoutGroupInput[]
+    | ChannelUpdateWithWhereUniqueWithoutGroupInput
+  >;
+  upsert?: Maybe<
+    | ChannelUpsertWithWhereUniqueWithoutGroupInput[]
+    | ChannelUpsertWithWhereUniqueWithoutGroupInput
+  >;
+  deleteMany?: Maybe<ChannelScalarWhereInput[] | ChannelScalarWhereInput>;
+  updateMany?: Maybe<
+    | ChannelUpdateManyWithWhereNestedInput[]
+    | ChannelUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ChannelUpdateWithWhereUniqueWithoutGroupInput {
+  where: ChannelWhereUniqueInput;
+  data: ChannelUpdateWithoutGroupDataInput;
+}
+
+export interface ChannelUpdateWithoutGroupDataInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedChannelsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutChannelsInput>;
+  messages?: Maybe<MessageUpdateManyWithoutChannelInput>;
+}
+
+export interface ChannelUpsertWithWhereUniqueWithoutGroupInput {
+  where: ChannelWhereUniqueInput;
+  update: ChannelUpdateWithoutGroupDataInput;
+  create: ChannelCreateWithoutGroupInput;
+}
+
+export interface GroupUpsertWithWhereUniqueWithoutCreatorInput {
+  where: GroupWhereUniqueInput;
+  update: GroupUpdateWithoutCreatorDataInput;
+  create: GroupCreateWithoutCreatorInput;
+}
+
+export interface GroupScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  category?: Maybe<String>;
+  category_not?: Maybe<String>;
+  category_in?: Maybe<String[] | String>;
+  category_not_in?: Maybe<String[] | String>;
+  category_lt?: Maybe<String>;
+  category_lte?: Maybe<String>;
+  category_gt?: Maybe<String>;
+  category_gte?: Maybe<String>;
+  category_contains?: Maybe<String>;
+  category_not_contains?: Maybe<String>;
+  category_starts_with?: Maybe<String>;
+  category_not_starts_with?: Maybe<String>;
+  category_ends_with?: Maybe<String>;
+  category_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  backgroundImage_not?: Maybe<String>;
+  backgroundImage_in?: Maybe<String[] | String>;
+  backgroundImage_not_in?: Maybe<String[] | String>;
+  backgroundImage_lt?: Maybe<String>;
+  backgroundImage_lte?: Maybe<String>;
+  backgroundImage_gt?: Maybe<String>;
+  backgroundImage_gte?: Maybe<String>;
+  backgroundImage_contains?: Maybe<String>;
+  backgroundImage_not_contains?: Maybe<String>;
+  backgroundImage_starts_with?: Maybe<String>;
+  backgroundImage_not_starts_with?: Maybe<String>;
+  backgroundImage_ends_with?: Maybe<String>;
+  backgroundImage_not_ends_with?: Maybe<String>;
+  url?: Maybe<String>;
+  url_not?: Maybe<String>;
+  url_in?: Maybe<String[] | String>;
+  url_not_in?: Maybe<String[] | String>;
+  url_lt?: Maybe<String>;
+  url_lte?: Maybe<String>;
+  url_gt?: Maybe<String>;
+  url_gte?: Maybe<String>;
+  url_contains?: Maybe<String>;
+  url_not_contains?: Maybe<String>;
+  url_starts_with?: Maybe<String>;
+  url_not_starts_with?: Maybe<String>;
+  url_ends_with?: Maybe<String>;
+  url_not_ends_with?: Maybe<String>;
+  AND?: Maybe<GroupScalarWhereInput[] | GroupScalarWhereInput>;
+  OR?: Maybe<GroupScalarWhereInput[] | GroupScalarWhereInput>;
+  NOT?: Maybe<GroupScalarWhereInput[] | GroupScalarWhereInput>;
+}
+
+export interface GroupUpdateManyWithWhereNestedInput {
+  where: GroupScalarWhereInput;
+  data: GroupUpdateManyDataInput;
+}
+
+export interface GroupUpdateManyDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+}
+
+export interface UserUpsertWithoutMessagesInput {
+  update: UserUpdateWithoutMessagesDataInput;
+  create: UserCreateWithoutMessagesInput;
+}
+
+export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput;
+  update: MessageUpdateWithoutChannelDataInput;
+  create: MessageCreateWithoutChannelInput;
+}
+
+export interface ChannelUpsertWithWhereUniqueWithoutParticipantsInput {
+  where: ChannelWhereUniqueInput;
+  update: ChannelUpdateWithoutParticipantsDataInput;
+  create: ChannelCreateWithoutParticipantsInput;
+}
+
+export interface UserUpsertWithoutCreatedGroupsInput {
+  update: UserUpdateWithoutCreatedGroupsDataInput;
+  create: UserCreateWithoutCreatedGroupsInput;
+}
+
+export interface GroupUpsertWithWhereUniqueWithoutParticipantsInput {
+  where: GroupWhereUniqueInput;
+  update: GroupUpdateWithoutParticipantsDataInput;
+  create: GroupCreateWithoutParticipantsInput;
+}
+
+export interface UserUpsertWithoutCreatedChannelsInput {
+  update: UserUpdateWithoutCreatedChannelsDataInput;
+  create: UserCreateWithoutCreatedChannelsInput;
+}
+
+export interface ChannelUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export interface GroupCreateInput {
+  id?: Maybe<ID_Input>;
+  creator: UserCreateOneWithoutCreatedGroupsInput;
+  name: String;
+  description: String;
+  category: String;
+  topics?: Maybe<GroupCreatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserCreateManyWithoutGroupsInput>;
+  channels?: Maybe<ChannelCreateManyWithoutGroupInput>;
+}
+
+export interface GroupUpdateInput {
+  creator?: Maybe<UserUpdateOneRequiredWithoutCreatedGroupsInput>;
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
+  participants?: Maybe<UserUpdateManyWithoutGroupsInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutGroupInput>;
+}
+
+export interface GroupUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  category?: Maybe<String>;
+  topics?: Maybe<GroupUpdatetopicsInput>;
+  image?: Maybe<String>;
+  backgroundImage?: Maybe<String>;
+  url?: Maybe<String>;
 }
 
 export interface MessageCreateInput {
   id?: Maybe<ID_Input>;
   content: String;
-  meeting: MeetingCreateOneWithoutMessagesInput;
-  author: UserCreateOneInput;
-}
-
-export interface MeetingCreateOneWithoutMessagesInput {
-  create?: Maybe<MeetingCreateWithoutMessagesInput>;
-  connect?: Maybe<MeetingWhereUniqueInput>;
-}
-
-export interface MeetingCreateWithoutMessagesInput {
-  id?: Maybe<ID_Input>;
-  name: ID_Input;
-  participants?: Maybe<UserCreateManyWithoutMeetingInput>;
-  access: String;
+  channel: ChannelCreateOneWithoutMessagesInput;
+  author: UserCreateOneWithoutMessagesInput;
 }
 
 export interface MessageUpdateInput {
   content?: Maybe<String>;
-  meeting?: Maybe<MeetingUpdateOneRequiredWithoutMessagesInput>;
-  author?: Maybe<UserUpdateOneRequiredInput>;
-}
-
-export interface MeetingUpdateOneRequiredWithoutMessagesInput {
-  create?: Maybe<MeetingCreateWithoutMessagesInput>;
-  update?: Maybe<MeetingUpdateWithoutMessagesDataInput>;
-  upsert?: Maybe<MeetingUpsertWithoutMessagesInput>;
-  connect?: Maybe<MeetingWhereUniqueInput>;
-}
-
-export interface MeetingUpdateWithoutMessagesDataInput {
-  name?: Maybe<ID_Input>;
-  participants?: Maybe<UserUpdateManyWithoutMeetingInput>;
-  access?: Maybe<String>;
-}
-
-export interface MeetingUpsertWithoutMessagesInput {
-  update: MeetingUpdateWithoutMessagesDataInput;
-  create: MeetingCreateWithoutMessagesInput;
+  channel?: Maybe<ChannelUpdateOneRequiredWithoutMessagesInput>;
+  author?: Maybe<UserUpdateOneRequiredWithoutMessagesInput>;
 }
 
 export interface MessageUpdateManyMutationInput {
   content?: Maybe<String>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  firstName: String;
+  lastName: String;
+  email: String;
+  password: String;
+  image?: Maybe<String>;
+  groups?: Maybe<GroupCreateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupCreateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelCreateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelCreateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageCreateManyWithoutAuthorInput>;
 }
 
 export interface UserUpdateInput {
@@ -892,7 +1901,11 @@ export interface UserUpdateInput {
   email?: Maybe<String>;
   password?: Maybe<String>;
   image?: Maybe<String>;
-  meeting?: Maybe<MeetingUpdateOneWithoutParticipantsInput>;
+  groups?: Maybe<GroupUpdateManyWithoutParticipantsInput>;
+  createdGroups?: Maybe<GroupUpdateManyWithoutCreatorInput>;
+  channels?: Maybe<ChannelUpdateManyWithoutParticipantsInput>;
+  createdChannels?: Maybe<ChannelUpdateManyWithoutCreatorInput>;
+  messages?: Maybe<MessageUpdateManyWithoutAuthorInput>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -903,15 +1916,26 @@ export interface UserUpdateManyMutationInput {
   image?: Maybe<String>;
 }
 
-export interface MeetingSubscriptionWhereInput {
+export interface ChannelSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<MeetingWhereInput>;
-  AND?: Maybe<MeetingSubscriptionWhereInput[] | MeetingSubscriptionWhereInput>;
-  OR?: Maybe<MeetingSubscriptionWhereInput[] | MeetingSubscriptionWhereInput>;
-  NOT?: Maybe<MeetingSubscriptionWhereInput[] | MeetingSubscriptionWhereInput>;
+  node?: Maybe<ChannelWhereInput>;
+  AND?: Maybe<ChannelSubscriptionWhereInput[] | ChannelSubscriptionWhereInput>;
+  OR?: Maybe<ChannelSubscriptionWhereInput[] | ChannelSubscriptionWhereInput>;
+  NOT?: Maybe<ChannelSubscriptionWhereInput[] | ChannelSubscriptionWhereInput>;
+}
+
+export interface GroupSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GroupWhereInput>;
+  AND?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  OR?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  NOT?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
 }
 
 export interface MessageSubscriptionWhereInput {
@@ -940,19 +1964,21 @@ export interface NodeNode {
   id: ID_Output;
 }
 
-export interface Meeting {
+export interface Channel {
   id: ID_Output;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  name: ID_Output;
-  access: String;
+  name: String;
+  description?: String;
 }
 
-export interface MeetingPromise extends Promise<Meeting>, Fragmentable {
+export interface ChannelPromise extends Promise<Channel>, Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  name: () => Promise<ID_Output>;
+  creator: <T = UserPromise>() => T;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
   participants: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -971,16 +1997,18 @@ export interface MeetingPromise extends Promise<Meeting>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
-  access: () => Promise<String>;
+  group: <T = GroupPromise>() => T;
 }
 
-export interface MeetingSubscription
-  extends Promise<AsyncIterator<Meeting>>,
+export interface ChannelSubscription
+  extends Promise<AsyncIterator<Channel>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  name: () => Promise<AsyncIterator<ID_Output>>;
+  creator: <T = UserSubscription>() => T;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
   participants: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -999,16 +2027,18 @@ export interface MeetingSubscription
     first?: Int;
     last?: Int;
   }) => T;
-  access: () => Promise<AsyncIterator<String>>;
+  group: <T = GroupSubscription>() => T;
 }
 
-export interface MeetingNullablePromise
-  extends Promise<Meeting | null>,
+export interface ChannelNullablePromise
+  extends Promise<Channel | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  name: () => Promise<ID_Output>;
+  creator: <T = UserPromise>() => T;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
   participants: <T = FragmentableArray<User>>(args?: {
     where?: UserWhereInput;
     orderBy?: UserOrderByInput;
@@ -1027,7 +2057,7 @@ export interface MeetingNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
-  access: () => Promise<String>;
+  group: <T = GroupPromise>() => T;
 }
 
 export interface User {
@@ -1050,7 +2080,51 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   email: () => Promise<String>;
   password: () => Promise<String>;
   image: () => Promise<String>;
-  meeting: <T = MeetingPromise>() => T;
+  groups: <T = FragmentableArray<Group>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdGroups: <T = FragmentableArray<Group>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdChannels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserSubscription
@@ -1064,7 +2138,51 @@ export interface UserSubscription
   email: () => Promise<AsyncIterator<String>>;
   password: () => Promise<AsyncIterator<String>>;
   image: () => Promise<AsyncIterator<String>>;
-  meeting: <T = MeetingSubscription>() => T;
+  groups: <T = Promise<AsyncIterator<GroupSubscription>>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdGroups: <T = Promise<AsyncIterator<GroupSubscription>>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdChannels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = Promise<AsyncIterator<MessageSubscription>>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserNullablePromise
@@ -1078,7 +2196,164 @@ export interface UserNullablePromise
   email: () => Promise<String>;
   password: () => Promise<String>;
   image: () => Promise<String>;
-  meeting: <T = MeetingPromise>() => T;
+  groups: <T = FragmentableArray<Group>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdGroups: <T = FragmentableArray<Group>>(args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  createdChannels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  messages: <T = FragmentableArray<Message>>(args?: {
+    where?: MessageWhereInput;
+    orderBy?: MessageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface Group {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  name: String;
+  description: String;
+  category: String;
+  topics: String[];
+  image?: String;
+  backgroundImage?: String;
+  url?: String;
+}
+
+export interface GroupPromise extends Promise<Group>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  creator: <T = UserPromise>() => T;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  category: () => Promise<String>;
+  topics: () => Promise<String[]>;
+  image: () => Promise<String>;
+  backgroundImage: () => Promise<String>;
+  url: () => Promise<String>;
+  participants: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface GroupSubscription
+  extends Promise<AsyncIterator<Group>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  creator: <T = UserSubscription>() => T;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  category: () => Promise<AsyncIterator<String>>;
+  topics: () => Promise<AsyncIterator<String[]>>;
+  image: () => Promise<AsyncIterator<String>>;
+  backgroundImage: () => Promise<AsyncIterator<String>>;
+  url: () => Promise<AsyncIterator<String>>;
+  participants: <T = Promise<AsyncIterator<UserSubscription>>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = Promise<AsyncIterator<ChannelSubscription>>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface GroupNullablePromise
+  extends Promise<Group | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  creator: <T = UserPromise>() => T;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  category: () => Promise<String>;
+  topics: () => Promise<String[]>;
+  image: () => Promise<String>;
+  backgroundImage: () => Promise<String>;
+  url: () => Promise<String>;
+  participants: <T = FragmentableArray<User>>(args?: {
+    where?: UserWhereInput;
+    orderBy?: UserOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  channels: <T = FragmentableArray<Channel>>(args?: {
+    where?: ChannelWhereInput;
+    orderBy?: ChannelOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface Message {
@@ -1093,7 +2368,7 @@ export interface MessagePromise extends Promise<Message>, Fragmentable {
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   content: () => Promise<String>;
-  meeting: <T = MeetingPromise>() => T;
+  channel: <T = ChannelPromise>() => T;
   author: <T = UserPromise>() => T;
 }
 
@@ -1104,7 +2379,7 @@ export interface MessageSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   content: () => Promise<AsyncIterator<String>>;
-  meeting: <T = MeetingSubscription>() => T;
+  channel: <T = ChannelSubscription>() => T;
   author: <T = UserSubscription>() => T;
 }
 
@@ -1115,29 +2390,29 @@ export interface MessageNullablePromise
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   content: () => Promise<String>;
-  meeting: <T = MeetingPromise>() => T;
+  channel: <T = ChannelPromise>() => T;
   author: <T = UserPromise>() => T;
 }
 
-export interface MeetingConnection {
+export interface ChannelConnection {
   pageInfo: PageInfo;
-  edges: MeetingEdge[];
+  edges: ChannelEdge[];
 }
 
-export interface MeetingConnectionPromise
-  extends Promise<MeetingConnection>,
+export interface ChannelConnectionPromise
+  extends Promise<ChannelConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<MeetingEdge>>() => T;
-  aggregate: <T = AggregateMeetingPromise>() => T;
+  edges: <T = FragmentableArray<ChannelEdge>>() => T;
+  aggregate: <T = AggregateChannelPromise>() => T;
 }
 
-export interface MeetingConnectionSubscription
-  extends Promise<AsyncIterator<MeetingConnection>>,
+export interface ChannelConnectionSubscription
+  extends Promise<AsyncIterator<ChannelConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<MeetingEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateMeetingSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ChannelEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateChannelSubscription>() => T;
 }
 
 export interface PageInfo {
@@ -1163,35 +2438,89 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface MeetingEdge {
-  node: Meeting;
+export interface ChannelEdge {
+  node: Channel;
   cursor: String;
 }
 
-export interface MeetingEdgePromise extends Promise<MeetingEdge>, Fragmentable {
-  node: <T = MeetingPromise>() => T;
+export interface ChannelEdgePromise extends Promise<ChannelEdge>, Fragmentable {
+  node: <T = ChannelPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface MeetingEdgeSubscription
-  extends Promise<AsyncIterator<MeetingEdge>>,
+export interface ChannelEdgeSubscription
+  extends Promise<AsyncIterator<ChannelEdge>>,
     Fragmentable {
-  node: <T = MeetingSubscription>() => T;
+  node: <T = ChannelSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateMeeting {
+export interface AggregateChannel {
   count: Int;
 }
 
-export interface AggregateMeetingPromise
-  extends Promise<AggregateMeeting>,
+export interface AggregateChannelPromise
+  extends Promise<AggregateChannel>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateMeetingSubscription
-  extends Promise<AsyncIterator<AggregateMeeting>>,
+export interface AggregateChannelSubscription
+  extends Promise<AsyncIterator<AggregateChannel>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GroupConnection {
+  pageInfo: PageInfo;
+  edges: GroupEdge[];
+}
+
+export interface GroupConnectionPromise
+  extends Promise<GroupConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GroupEdge>>() => T;
+  aggregate: <T = AggregateGroupPromise>() => T;
+}
+
+export interface GroupConnectionSubscription
+  extends Promise<AsyncIterator<GroupConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GroupEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGroupSubscription>() => T;
+}
+
+export interface GroupEdge {
+  node: Group;
+  cursor: String;
+}
+
+export interface GroupEdgePromise extends Promise<GroupEdge>, Fragmentable {
+  node: <T = GroupPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface GroupEdgeSubscription
+  extends Promise<AsyncIterator<GroupEdge>>,
+    Fragmentable {
+  node: <T = GroupSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateGroup {
+  count: Int;
+}
+
+export interface AggregateGroupPromise
+  extends Promise<AggregateGroup>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateGroupSubscription
+  extends Promise<AsyncIterator<AggregateGroup>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -1320,57 +2649,125 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface MeetingSubscriptionPayload {
+export interface ChannelSubscriptionPayload {
   mutation: MutationType;
-  node: Meeting;
+  node: Channel;
   updatedFields: String[];
-  previousValues: MeetingPreviousValues;
+  previousValues: ChannelPreviousValues;
 }
 
-export interface MeetingSubscriptionPayloadPromise
-  extends Promise<MeetingSubscriptionPayload>,
+export interface ChannelSubscriptionPayloadPromise
+  extends Promise<ChannelSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = MeetingPromise>() => T;
+  node: <T = ChannelPromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = MeetingPreviousValuesPromise>() => T;
+  previousValues: <T = ChannelPreviousValuesPromise>() => T;
 }
 
-export interface MeetingSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<MeetingSubscriptionPayload>>,
+export interface ChannelSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ChannelSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = MeetingSubscription>() => T;
+  node: <T = ChannelSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = MeetingPreviousValuesSubscription>() => T;
+  previousValues: <T = ChannelPreviousValuesSubscription>() => T;
 }
 
-export interface MeetingPreviousValues {
+export interface ChannelPreviousValues {
   id: ID_Output;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  name: ID_Output;
-  access: String;
+  name: String;
+  description?: String;
 }
 
-export interface MeetingPreviousValuesPromise
-  extends Promise<MeetingPreviousValues>,
+export interface ChannelPreviousValuesPromise
+  extends Promise<ChannelPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  name: () => Promise<ID_Output>;
-  access: () => Promise<String>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
 }
 
-export interface MeetingPreviousValuesSubscription
-  extends Promise<AsyncIterator<MeetingPreviousValues>>,
+export interface ChannelPreviousValuesSubscription
+  extends Promise<AsyncIterator<ChannelPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  name: () => Promise<AsyncIterator<ID_Output>>;
-  access: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GroupSubscriptionPayload {
+  mutation: MutationType;
+  node: Group;
+  updatedFields: String[];
+  previousValues: GroupPreviousValues;
+}
+
+export interface GroupSubscriptionPayloadPromise
+  extends Promise<GroupSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GroupPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GroupPreviousValuesPromise>() => T;
+}
+
+export interface GroupSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GroupSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GroupSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GroupPreviousValuesSubscription>() => T;
+}
+
+export interface GroupPreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  name: String;
+  description: String;
+  category: String;
+  topics: String[];
+  image?: String;
+  backgroundImage?: String;
+  url?: String;
+}
+
+export interface GroupPreviousValuesPromise
+  extends Promise<GroupPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  category: () => Promise<String>;
+  topics: () => Promise<String[]>;
+  image: () => Promise<String>;
+  backgroundImage: () => Promise<String>;
+  url: () => Promise<String>;
+}
+
+export interface GroupPreviousValuesSubscription
+  extends Promise<AsyncIterator<GroupPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  category: () => Promise<AsyncIterator<String>>;
+  topics: () => Promise<AsyncIterator<String[]>>;
+  image: () => Promise<AsyncIterator<String>>;
+  backgroundImage: () => Promise<AsyncIterator<String>>;
+  url: () => Promise<AsyncIterator<String>>;
 }
 
 export interface MessageSubscriptionPayload {
@@ -1528,7 +2925,11 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "Meeting",
+    name: "Group",
+    embedded: false
+  },
+  {
+    name: "Channel",
     embedded: false
   },
   {

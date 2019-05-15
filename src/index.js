@@ -4,7 +4,8 @@ const { permissions } = require('./utils/permissions');
 const Mutation = require('./resolvers/Mutation');
 const Query = require('./resolvers/Query');
 const Subscription = require('./resolvers/Subscription');
-const Meeting = require('./resolvers/Meeting');
+const Group = require('./resolvers/Group');
+const Channel = require('./resolvers/Channel');
 const Message = require('./resolvers/Message');
 const User = require('./resolvers/User');
 
@@ -14,7 +15,8 @@ const server = new GraphQLServer({
     Query,
     Mutation,
     Subscription,
-    Meeting,
+    Group,
+    Channel,
     Message,
     User
   },
